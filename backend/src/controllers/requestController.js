@@ -3,12 +3,14 @@ import Customer from "../models/Customer.js";
 import Supplier from "../models/Supplier.js";
 import { io } from "../../server.js";
 import { updateStatsAfterTransaction } from "./supplierStatsController.js";
+import { getDistance } from "../utils/haversine.js";
 
 // Generate OTP
 const generateOTP = () => Math.floor(1000 + Math.random() * 9000).toString();
 
 // 🧍‍♀️ Customer creates a new request
 export const createRequest = async (req, res) => {
+
   try {
     if (req.user.role !== "CUSTOMER") {
       return res.status(403).json({ message: "Please login as customer" });
@@ -41,11 +43,11 @@ export const createRequest = async (req, res) => {
     await newRequest.save();
 
     // Emit to supplier
-    io.to(supplierId.toString()).emit("newChargingRequest", {
+    io.to(supplier._id.toString()).emit("newChargingRequest", {
       _id: newRequest._id,
       customerName: customer.name,
       unitsNeeded: unitsRequested,
-      distance: Math.random() * 10, // mock for now
+      
     });
 
     res.status(201).json({
@@ -85,8 +87,8 @@ export const acceptRequest = async (req, res) => {
         name: request.supplier.name,
         phone: request.supplier.phone,
         address: request.supplier.location,
-        lat: request.supplier.coordinates?.lat,
-        lng: request.supplier.coordinates?.lng,
+        lat: request.supplier.coordinates?.lat || null,
+        lng: request.supplier.coordinates?.lng || null,
       },
       message: "Your request was accepted! Here is your OTP and supplier location.",
     });
@@ -163,7 +165,27 @@ export const verifyOtp = async (req, res) => {
   }
 };
 
-export const updateCustomerLocation = async (req, res) => { try { const { customerId } = req.body; const { lat, lng } = req.body; const customer = await Customer.findById(customerId); if (!customer) return res.status(404).json({ message: "Customer not found" }); customer.coordinates = { lat, lng }; await customer.save(); res.json({ message: "Customer location updated" }); } catch (err) { console.error("❌ Error updating customer location:", err); res.status(500).json({ message: "Error updating location" }); } };
+export const updateCustomerLocation = async (req, res) => {
+  try {
+    const { customerId, lat, lng } = req.body;
+
+    if (!lat || !lng)
+      return res.status(400).json({ message: "Coordinates missing" });
+
+    const customer = await Customer.findByIdAndUpdate(
+      customerId,
+      { coordinates: { lat, lng }},
+      { new: true }
+    );
+
+    if (!customer)
+      return res.status(404).json({ message: "Customer not found" });
+
+    res.json({ message: "Location updated", customer });
+  } catch (err) {
+    res.status(500).json({ message: "Error updating location" });
+  }
+};
 
 // ✅ Start charging
 export const startCharging = async (req, res) => {

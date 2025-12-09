@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { AREAS } from "../constants/AREAS.js";
 
 const supplierSchema = new mongoose.Schema(
   {
@@ -6,27 +7,28 @@ const supplierSchema = new mongoose.Schema(
     password: { type: String, required: true },
     name: { type: String, required: true },
     phone: { type: String, required: true },
-    role: { type: String, default: "SUPPLIER" },
 
-    // Textual address (shown in UI)
-    location: { type: String, required: true },
+    role: { type: String, default: "SUPPLIER" },
 
     renewable: { type: Boolean, required: true },
     pricePerUnit: { type: Number, required: true },
-    availableUnits: { type: Number, required: true, default: 0 },
-    status: { type: String, enum: ["AVAILABLE", "BUSY"], default: "AVAILABLE" },
+    availableUnits: { type: Number, required: true },
 
-    // ✅ Nested coordinate object (for map link)
+  
+     area: {
+        type: String,
+        required: true,
+        enum: Object.keys(AREAS)
+      },
+        // 🔥 REQUIRED NOW — makes sorting work
     coordinates: {
       lat: { type: Number, required: false },
-      lng: { type: Number, required: false },
+      lng: { type: Number, required: false }
     },
-    upiId: { type: String, required: false },
 
-    isOnline: { type: Boolean, default: false}
+    isOnline: { type: Boolean, default: false }
   },
   { timestamps: true }
 );
 
-const Supplier = mongoose.model("Supplier", supplierSchema);
-export default Supplier;
+export default mongoose.model("Supplier", supplierSchema);

@@ -1,13 +1,31 @@
+// src/pages/RegisterSupplier.jsx
 import React, { useState } from "react";
 import { Container, Form, Button } from "react-bootstrap";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+const AREAS = {
+  "JP Nagar": { lat: 12.9063, lng: 77.5850 },
+  "KR Market": { lat: 12.9592, lng: 77.5737 },
+  "BTM Layout": { lat: 12.9166, lng: 77.6101 },
+  "MG Road":   { lat: 12.9758, lng: 77.6051 },
+  "Rajajinagar": { lat: 12.9950, lng: 77.5535 },
+  "Hebbal": { lat: 13.0358, lng: 77.5970 },
+  "Whitefield": { lat: 12.9698, lng: 77.7499 }
+};
+
 function RegisterSupplier() {
   const [form, setForm] = useState({
-    username: "", password: "", name: "", phone: "", location: "",
-    pricePerUnit: "", availableUnits: "", renewable: false
+    username: "",
+    password: "",
+    name: "",
+    phone: "",
+    pricePerUnit: "",
+    availableUnits: "",
+    renewable: false,
+    areaName: "JP Nagar"
   });
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -18,42 +36,41 @@ function RegisterSupplier() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Convert pricePerUnit and availableUnits to numbers
-    const payload = {
-      ...form,
-      pricePerUnit: Number(form.pricePerUnit),
-      availableUnits: Number(form.availableUnits)
-    };
+    const coords = AREAS[form.areaName];
 
     try {
-      await axios.post("http://localhost:5000/api/auth/register/supplier", payload);
-      alert("Supplier registered successfully!");
+      await axios.post("http://localhost:5000/api/auth/register/supplier", {
+        username: form.username,
+        password: form.password,
+        name: form.name,
+        phone: form.phone,
+        renewable: form.renewable,
+        pricePerUnit: Number(form.pricePerUnit),
+        availableUnits: Number(form.availableUnits),
+
+        area: form.areaName,   // TEXT
+        // IMPORTANT 🔥🔥 SEND COORDINATES
+      });
+
+      alert("Supplier registered!");
       navigate("/login");
     } catch (err) {
-      console.error(err.response?.data || err);
-      alert("Registration failed: " + (err.response?.data?.message || err.message));
+      alert(err.response?.data?.message || "Registration failed");
     }
   };
 
   return (
     <Container className="mt-5" style={{ maxWidth: "600px" }}>
-      <h2 className="text-center mb-4">Register as Supplier</h2>
+      <h2 className="text-center mb-4">Register Supplier</h2>
+
       <Form onSubmit={handleSubmit}>
-        {[
-          { field: "username", type: "text" },
-          { field: "password", type: "password" },
-          { field: "name", type: "text" },
-          { field: "phone", type: "text" },
-          { field: "location", type: "text", label: "Address" },
-          { field: "pricePerUnit", type: "number", label: "Rate per Unit" },
-          { field: "availableUnits", type: "number", label: "Units Available" },
-        ].map(({ field, type, label }, idx) => (
-          <Form.Group className="mb-3" key={idx}>
-            <Form.Label>{label || field.charAt(0).toUpperCase() + field.slice(1)}</Form.Label>
+        {["username", "password", "name", "phone", "pricePerUnit", "availableUnits"].map((field, idx) => (
+          <Form.Group key={idx} className="mb-3">
+            <Form.Label>{field}</Form.Label>
             <Form.Control
-              type={type}
+              required
+              type={field === "password" ? "password" : "text"}
               name={field}
-              placeholder={`Enter ${label || field}`}
               value={form[field]}
               onChange={handleChange}
             />
@@ -61,18 +78,26 @@ function RegisterSupplier() {
         ))}
 
         <Form.Group className="mb-3">
+          <Form.Label>Select Area</Form.Label>
+
+          <Form.Select name="areaName" value={form.areaName} onChange={handleChange}>
+            {Object.keys(AREAS).map((area) => (
+              <option key={area} value={area}>{area}</option>
+            ))}
+          </Form.Select>
+        </Form.Group>
+
+        <Form.Group className="mb-3">
           <Form.Check
             type="checkbox"
             name="renewable"
             checked={form.renewable}
             onChange={handleChange}
-            label="I use renewable energy (required)"
+            label="I use renewable energy"
           />
         </Form.Group>
 
-        <Button variant="success" type="submit" className="w-100">
-          Register
-        </Button>
+        <Button type="submit" className="w-100">Register</Button>
       </Form>
     </Container>
   );
