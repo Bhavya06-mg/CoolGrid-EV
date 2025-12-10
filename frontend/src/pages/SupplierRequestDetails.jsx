@@ -226,7 +226,7 @@ const navigate = useNavigate();
     setConfirmLoading(true);
 
     const res = await axios.put(
-      `http://localhost:5000/api/request/${requestId}/markPaid`,
+      `https://coolgrid-ev-1.onrender.com/api/request/${requestId}/markPaid`,
       {
         mode: "CASH",
         amountPaid: totalCost,
