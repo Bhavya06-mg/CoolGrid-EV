@@ -4,7 +4,7 @@ import io from "socket.io-client";
 import axios from "axios";
 import { Spinner, Container, Button, Alert,Image } from "react-bootstrap";
 
-const BACKEND = "http://localhost:5000";
+const BACKEND = "https://coolgrid-ev-1.onrender.com";
 
 // ✅ Create a single socket connection
 const socket = io(BACKEND, { autoConnect: true });

@@ -15,7 +15,7 @@ function MapComponent() {
 
   useEffect(() => {
     // ✅ Fetch suppliers from backend
-    fetch("http://localhost:5000/api/supplier") // make sure backend is running
+    fetch("https://coolgrid-ev-1.onrender.com/api/supplier") // make sure backend is running
       .then((res) => res.json())
       .then((data) => setSuppliers(data))
       .catch((err) => console.error("Error fetching suppliers:", err));

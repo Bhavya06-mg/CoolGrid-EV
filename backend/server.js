@@ -42,7 +42,7 @@ app.get(/^(?!\/api).*/, (req, res) => {
 
 export const io = new Server(server, {
   cors: {
-    origin: "*", // allow Render frontend
+    origin: "https://coolgrid-ev-1.onrender.com", // allow Render frontend
     methods: ["GET", "POST"],
   },
 });

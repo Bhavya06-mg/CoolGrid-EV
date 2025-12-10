@@ -86,7 +86,7 @@ export default function DashboardCustomer() {
       setLoadingSuppliers(true);
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:5000/api/customer/dashboard", {
+        const res = await axios.get("https://coolgrid-ev-1.onrender.com/api/customer/dashboard", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -143,14 +143,14 @@ export default function DashboardCustomer() {
     try {
       if (customerLocation) {
         await axios.post(
-          "http://localhost:5000/api/request/customer/update-location",
+          "https://coolgrid-ev-1.onrender.com/api/request/customer/update-location",
           { customerId, lat: customerLocation.lat, lng: customerLocation.lng },
           { headers: { Authorization: `Bearer ${token}` } }
         );
       }
 
       const res = await axios.post(
-        "http://localhost:5000/api/request/create",
+        "https://coolgrid-ev-1.onrender.com/api/request/create",
         { customerId, supplierId, unitsRequested },
         { headers: { Authorization: `Bearer ${token}` } }
       );

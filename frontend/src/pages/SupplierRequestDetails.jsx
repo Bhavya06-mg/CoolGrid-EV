@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
 
-const BACKEND = "http://localhost:5000";
+const BACKEND = "https://coolgrid-ev-1.onrender.com";
 const socket = io(BACKEND, { autoConnect: true });
 
 

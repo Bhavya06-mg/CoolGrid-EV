@@ -6,7 +6,7 @@ import "chart.js/auto"; // simpler registration
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const BACKEND = "http://localhost:5000"; // change if your backend is at a different host/port
+const BACKEND = "https://coolgrid-ev-1.onrender.com"; // change if your backend is at a different host/port
 
 function SupplierStatistics() {
   const [stats, setStats] = useState(null);

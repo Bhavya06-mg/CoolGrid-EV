@@ -16,7 +16,7 @@ function RegisterCustomer() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/api/auth/register/customer", form);
+      await axios.post("https://coolgrid-ev-1.onrender.com/api/auth/register/customer", form);
       alert("Customer registered successfully!");
       navigate("/login");
     } catch (err) {

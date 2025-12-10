@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Container, Form, Button, Card, Alert } from "react-bootstrap";
 
-const BACKEND = "http://localhost:5000";
+const BACKEND = "https://coolgrid-ev-1.onrender.com";
 
 export default function ProfileCustomer() {
   const [user, setUser] = useState(null);

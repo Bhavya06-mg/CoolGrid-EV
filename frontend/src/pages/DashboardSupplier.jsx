@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const socket = io("http://localhost:5000");
+const socket = io("https://coolgrid-ev-1.onrender.com");
 
 function DashboardSupplier() {
   const [supplierId, setSupplierId] = useState("");
@@ -55,7 +55,7 @@ function DashboardSupplier() {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.post(
-        `http://localhost:5000/api/request/accept/${requestId}`,
+        `https://coolgrid-ev-1.onrender.com/api/request/accept/${requestId}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -69,7 +69,7 @@ function DashboardSupplier() {
   const handleReject = async (requestId) => {
     try {
       await axios.post(
-        `http://localhost:5000/api/request/reject/${requestId}`,
+        `https://coolgrid-ev-1.onrender.com/api/request/reject/${requestId}`,
         {},
         { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );

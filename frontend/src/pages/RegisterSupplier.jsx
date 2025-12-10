@@ -39,7 +39,7 @@ function RegisterSupplier() {
     const coords = AREAS[form.areaName];
 
     try {
-      await axios.post("http://localhost:5000/api/auth/register/supplier", {
+      await axios.post("https://coolgrid-ev-1.onrender.com/api/auth/register/supplier", {
         username: form.username,
         password: form.password,
         name: form.name,

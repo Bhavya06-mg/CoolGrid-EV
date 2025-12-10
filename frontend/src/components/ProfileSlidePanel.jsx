@@ -34,7 +34,7 @@ useEffect(() => {
   const fetchProfile = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/profile/profile",
+        "https://coolgrid-ev-1.onrender.com/api/profile/profile",
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -53,8 +53,8 @@ useEffect(() => {
     try {
       const url =
         role === "SUPPLIER"
-          ? `http://localhost:5000/api/profile/supplier/update`
-          : `http://localhost:5000/api/profile/customer/update`;
+          ? `https://coolgrid-ev-1.onrender.com/api/profile/supplier/update`
+          : `https://coolgrid-ev-1.onrender.com/api/profile/customer/update`;
 
       await axios.put(url, profile, {
         headers: { Authorization: `Bearer ${token}` },
@@ -74,7 +74,7 @@ useEffect(() => {
 
     try {
       await axios.put(
-        `http://localhost:5000/api/auth/change-password/${userId}`,
+        `https://coolgrid-ev-1.onrender.com/api/auth/change-password/${userId}`,
         { newPassword },
         { headers: { Authorization: `Bearer ${token}` } }
       );
