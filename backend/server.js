@@ -1,6 +1,9 @@
 import { createServer } from "http";
 import { Server } from "socket.io";
 import app from "./src/app.js";
+import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
 
 import customerRoutes from "./src/routes/customerRoutes.js";
 import supplierRoutes from "./src/routes/supplierRoutes.js";
@@ -10,27 +13,49 @@ import userRoutes from "./src/routes/userRoutes.js";
 
 const PORT = process.env.PORT || 5000;
 
+// Create HTTP Server
 const server = createServer(app);
 
-// ✅ Create and export socket instance
+// For __dirname in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+//
+// ---------------------------
+// 🔥 SERVE REACT BUILD (NO ERRORS)
+// ---------------------------
+//
+
+// Serve static frontend build
+app.use(express.static(path.join(__dirname, "build")));
+
+// Serve index.html for all non-API paths (REGEX instead of "/*")
+app.get(/^(?!\/api).*/, (req, res) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
+
+//
+// ---------------------------
+// 🔥 SOCKET.IO (Render Compatible)
+// ---------------------------
+//
+
 export const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "*", // allow Render frontend
     methods: ["GET", "POST"],
   },
 });
 
-
 io.on("connection", (socket) => {
   console.log("🟢 New client connected:", socket.id);
 
-  // Supplier joins their private room
   socket.on("joinSupplierRoom", (supplierId) => {
     socket.join(supplierId);
     console.log(`🏠 Supplier joined room: ${supplierId}`);
   });
 
-   socket.on("joinCustomerRoom", (customerId) => {
+  socket.on("joinCustomerRoom", (customerId) => {
     socket.join(customerId);
     console.log(`👤 Customer joined room: ${customerId}`);
   });
@@ -40,42 +65,45 @@ io.on("connection", (socket) => {
   });
 
   socket.on("cashPaymentChosen", (data) => {
-      if (!data.supplierId) {
-    console.error("❌ Missing supplierId in cashPaymentChosen");
-    return;
-  }
+    if (!data.supplierId) {
+      console.error("❌ Missing supplierId");
+      return;
+    }
     io.to(data.supplierId.toString()).emit("cashPaymentChosen", data);
   });
 
   socket.on("upiPaymentDone", (data) => {
     io.to(data.supplierId.toString()).emit("upiPaymentDone", data);
   });
-  socket.on("paymentConfirmedBySupplier", (data) => {
-  console.log("💚 Forwarding payment confirmation to customer:", data);
 
-  io.to(data.customerId).emit("paymentConfirmedBySupplier", {
-    message: data.message,
-    requestId: data.requestId,
-    supplierId: data.supplierId,
+  socket.on("paymentConfirmedBySupplier", (data) => {
+    console.log("💚 Forwarding payment confirmation to customer");
+    io.to(data.customerId).emit("paymentConfirmedBySupplier", data);
   });
-});
 
   socket.on("disconnect", () => {
     console.log("🔴 Client disconnected:", socket.id);
   });
 });
 
+//
+// ---------------------------
+// 🔥 API Routes
+// ---------------------------
+//
 
-// Routes
 app.use("/api/customer", customerRoutes);
 app.use("/api/supplier", supplierRoutes);
 app.use("/api/suppliers/stats", supplierStatsRoutes);
 app.use("/api/request", requestRoutes);
 app.use("/api/profile", userRoutes);
 
+//
+// ---------------------------
+// 🚀 Start Server
+// ---------------------------
+//
 
 server.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
-
-
