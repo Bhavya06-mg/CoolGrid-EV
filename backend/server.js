@@ -4,6 +4,7 @@ import app from "./src/app.js";
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
+import cors from "cors";   // ✅ REQUIRED IMPORT
 
 import customerRoutes from "./src/routes/customerRoutes.js";
 import supplierRoutes from "./src/routes/supplierRoutes.js";
@@ -26,10 +27,8 @@ const __dirname = path.dirname(__filename);
 // ---------------------------
 //
 
-// Serve static frontend build
 app.use(express.static(path.join(__dirname, "build")));
 
-// Serve index.html for all non-API paths (REGEX instead of "/*")
 app.get(/^(?!\/api).*/, (req, res) => {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
@@ -40,12 +39,32 @@ app.get(/^(?!\/api).*/, (req, res) => {
 // ---------------------------
 //
 
-export const io = new Server(server, {
+// ✅ Create io BEFORE using io.on()
+const io = new Server(server, {
   cors: {
-    origin: "https://coolgrid-ev-1.onrender.com", // allow Render frontend
-    
+    origin: [
+      "https://coolgrid-ev-1.onrender.com",
+      "http://localhost:3000",
+      "http://192.168.43.162:3000",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
   },
 });
+
+// CORS middleware for API
+app.use(
+  cors({
+    origin: [
+      "https://coolgrid-ev-1.onrender.com",
+      "http://localhost:3000",
+      "http://192.168.43.162:3000",
+    ],
+    methods: "GET,POST,PUT,DELETE",
+    allowedHeaders: "Content-Type,Authorization",
+    credentials: true,
+  })
+);
 
 io.on("connection", (socket) => {
   console.log("🟢 New client connected:", socket.id);
@@ -107,3 +126,6 @@ app.use("/api/profile", userRoutes);
 server.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+
+// ✅ Export io so controllers can use it
+export { io };
