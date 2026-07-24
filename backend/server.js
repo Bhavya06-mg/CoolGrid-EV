@@ -11,8 +11,10 @@ import supplierRoutes from "./src/routes/supplierRoutes.js";
 import supplierStatsRoutes from "./src/routes/supplierStatsRoutes.js";
 import requestRoutes from "./src/routes/requestRoutes.js";
 import userRoutes from "./src/routes/userRoutes.js";
+import authRoutes from"./src/routes/authRoutes.js";
 
-const PORT = process.env.PORT || 5000;
+
+const PORT = process.env.PORT || 10000;
 
 // Create HTTP Server
 const server = createServer(app);
@@ -110,7 +112,7 @@ io.on("connection", (socket) => {
 // 🔥 API Routes
 // ---------------------------
 //
-
+app.use("/api/auth", authRoutes);
 app.use("/api/customer", customerRoutes);
 app.use("/api/supplier", supplierRoutes);
 app.use("/api/suppliers/stats", supplierStatsRoutes);

@@ -14,14 +14,16 @@ dotenv.config();
 connectDB();
 
 const app = express();
-app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/customer", customerRoutes);
-app.use("/api/supplier", supplierRoutes);
-app.use("/api/user", userRoutes);
+
+// app.use("/api/customer", customerRoutes);
+// app.use("/api/supplier", supplierRoutes);
+// app.use("/api/user", userRoutes);
+// app.get("/test", (req, res) => {
+//   res.json({ message: "Backend Working" });
+// });
 
 
 export default app;
