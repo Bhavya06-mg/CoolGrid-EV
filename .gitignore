@@ -2,5 +2,7 @@ node_modules/
 .env
 uploads/
 out/
-build/
 dist/
+
+# Ignore frontend build only
+frontend/build/
