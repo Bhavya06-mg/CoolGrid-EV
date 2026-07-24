@@ -9,8 +9,9 @@ router.post("/register/customer", registerCustomer);
 router.post("/register/supplier", registerSupplier);
 router.post("/login", login);
 router.put("/change-password/:userId", protect, changePassword);
-router.get("/hello", (req, res) => {
-  res.send("Auth Route Working");
-});
+router.post("/register/customer", (req, res, next) => {
+  console.log("✅ Route reached");
+  next();
+}, registerCustomer);
 
 export default router;
