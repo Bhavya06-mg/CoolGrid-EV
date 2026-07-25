@@ -1,8 +1,9 @@
 // src/pages/RegisterSupplier.jsx
 import React, { useState } from "react";
-import { Container, Form, Button } from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import LiquidGlassLayout from "../components/LiquidGlassLayout";
 
 const AREAS = {
   "JP Nagar": { lat: 12.9063, lng: 77.5850 },
@@ -13,6 +14,12 @@ const AREAS = {
   "Hebbal": { lat: 13.0358, lng: 77.5970 },
   "Whitefield": { lat: 12.9698, lng: 77.7499 }
 };
+
+const SUPPLIER_HIGHLIGHTS = [
+  { title: "Set your own pricing", desc: "Control your price per unit and available capacity anytime." },
+  { title: "Reach nearby demand", desc: "Get matched with customers searching your service area." },
+  { title: "Renewable-friendly", desc: "Highlight your renewable energy status to attract more customers." },
+];
 
 function RegisterSupplier() {
   const [form, setForm] = useState({
@@ -60,14 +67,23 @@ function RegisterSupplier() {
   };
 
   return (
-    <Container className="mt-5" style={{ maxWidth: "600px" }}>
-      <h2 className="text-center mb-4">Register Supplier</h2>
+    <LiquidGlassLayout
+      title="Register supplier"
+      accent="amber"
+      panelMaxWidth={960}
+      highlights={SUPPLIER_HIGHLIGHTS}
+      scene="customer"
+      carOrigin="station"
+      stationCaption="Charging completed"
+    >
+      <p className="glass-subtitle">Join the network and start supplying energy credits</p>
 
       <Form onSubmit={handleSubmit}>
         {["username", "password", "name", "phone", "pricePerUnit", "availableUnits"].map((field, idx) => (
           <Form.Group key={idx} className="mb-3">
-            <Form.Label>{field}</Form.Label>
+            <div className="glass-field-label">{field}</div>
             <Form.Control
+              className="glass-input"
               required
               type={field === "password" ? "password" : "text"}
               name={field}
@@ -78,28 +94,36 @@ function RegisterSupplier() {
         ))}
 
         <Form.Group className="mb-3">
-          <Form.Label>Select Area</Form.Label>
-
-          <Form.Select name="areaName" value={form.areaName} onChange={handleChange}>
+          <div className="glass-field-label">Select area</div>
+          <Form.Select
+            className="glass-input"
+            name="areaName"
+            value={form.areaName}
+            onChange={handleChange}
+          >
             {Object.keys(AREAS).map((area) => (
-              <option key={area} value={area}>{area}</option>
+              <option key={area} value={area} style={{ color: "#000" }}>{area}</option>
             ))}
           </Form.Select>
         </Form.Group>
 
-        <Form.Group className="mb-3">
+        <Form.Group className="mb-4 d-flex align-items-center">
           <Form.Check
+            className="glass-check"
             type="checkbox"
             name="renewable"
             checked={form.renewable}
             onChange={handleChange}
             label="I use renewable energy"
+            style={{ color: "rgba(230,235,244,0.8)" }}
           />
         </Form.Group>
 
-        <Button type="submit" className="w-100">Register</Button>
+        <Button type="submit" className="glass-btn">
+          Register
+        </Button>
       </Form>
-    </Container>
+    </LiquidGlassLayout>
   );
 }
 
