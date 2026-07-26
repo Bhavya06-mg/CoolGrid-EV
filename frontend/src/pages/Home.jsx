@@ -1,35 +1,58 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { Container, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Home() {
+  const navigate = useNavigate();
   const panelRef = useRef(null);
   const bgRef = useRef(null);
+
+  // If someone lands on "/" while already logged in (typed URL, bookmark,
+  // browser back button), send them straight to their dashboard instead of
+  // showing the public landing page again. useEffect + navigate(..., {replace:true})
+  // so it doesn't add a junk entry to browser history.
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+    if (token) {
+      navigate(role === "SUPPLIER" ? "/dashboard/supplier" : "/dashboard/customer", {
+        replace: true,
+      });
+    }
+  }, [navigate]);
 
   const handlePanelMouseMove = (e) => {
     const panel = panelRef.current;
     if (!panel) return;
     const rect = panel.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    panel.style.setProperty("--mx", `${x}%`);
-    panel.style.setProperty("--my", `${y}%`);
+    const px = (e.clientX - rect.left) / rect.width;
+    const py = (e.clientY - rect.top) / rect.height;
+
+    const tiltX = (py - 0.5) * -6;
+    const tiltY = (px - 0.5) * 6;
+
+    panel.style.setProperty("--tiltX", `${tiltX}deg`);
+    panel.style.setProperty("--tiltY", `${tiltY}deg`);
+    panel.style.setProperty("--sx", `${px * 100}%`);
+    panel.style.setProperty("--sy", `${py * 100}%`);
   };
 
   const handlePanelMouseLeave = () => {
     const panel = panelRef.current;
     if (!panel) return;
-    panel.style.setProperty("--mx", `50%`);
-    panel.style.setProperty("--my", `50%`);
+    panel.style.setProperty("--tiltX", `0deg`);
+    panel.style.setProperty("--tiltY", `0deg`);
+    panel.style.setProperty("--sx", `50%`);
+    panel.style.setProperty("--sy", `-20%`);
   };
 
   const handlePageMouseMove = (e) => {
     const bg = bgRef.current;
     if (!bg) return;
-    const x = (e.clientX / window.innerWidth) * 100;
-    const y = (e.clientY / window.innerHeight) * 100;
-    bg.style.setProperty("--bgx", `${x}%`);
-    bg.style.setProperty("--bgy", `${y}%`);
+    const px = (e.clientX / window.innerWidth - 0.5) * 2;
+    const py = (e.clientY / window.innerHeight - 0.5) * 2;
+    bg.style.setProperty("--px", `${px * -18}px`);
+    bg.style.setProperty("--py", `${py * -18}px`);
   };
 
   return (
@@ -58,71 +81,55 @@ function Home() {
         .glass-cta:active {
           transform: translateY(0px) scale(0.98);
         }
-        .glass-panel-tracked {
-          --mx: 50%;
-          --my: 50%;
+
+        .glass-panel-tilt {
+          --tiltX: 0deg;
+          --tiltY: 0deg;
+          --sx: 50%;
+          --sy: -20%;
+          transform: perspective(1000px) rotateX(var(--tiltX)) rotateY(var(--tiltY));
+          transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+          transform-style: preserve-3d;
         }
-        .glass-panel-tracked::before {
+        .glass-panel-tilt::before {
           content: '';
           position: absolute;
           inset: 0;
           background: radial-gradient(
-            380px circle at var(--mx) var(--my),
-            rgba(255, 255, 255, 0.14),
-            rgba(255, 255, 255, 0.05) 35%,
-            transparent 65%
-          );
-          transition: opacity 0.25s ease;
-          pointer-events: none;
-        }
-        .glass-panel-tracked::after {
-          content: '';
-          position: absolute;
-          inset: 0;
-          border-radius: inherit;
-          box-shadow: inset 0 0 0 1px transparent;
-          background: radial-gradient(
-            600px circle at var(--mx) var(--my),
-            rgba(125, 211, 252, 0.10),
-            transparent 60%
-          );
-          pointer-events: none;
-        }
-        .bg-tracked {
-          --bgx: 50%;
-          --bgy: 50%;
-        }
-        .bg-tracked::after {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: radial-gradient(
-            700px circle at var(--bgx) var(--bgy),
-            rgba(125, 211, 252, 0.10),
-            rgba(52, 211, 153, 0.05) 40%,
+            260px circle at var(--sx) var(--sy),
+            rgba(255, 255, 255, 0.10),
             transparent 70%
           );
-          transition: opacity 0.3s ease;
+          transition: background 0.35s cubic-bezier(0.22, 1, 0.36, 1);
           pointer-events: none;
+        }
+
+        .bg-parallax {
+          --px: 0px;
+          --py: 0px;
+        }
+        .bg-parallax .blob-inner {
+          transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+          transform: translate(var(--px), var(--py));
         }
       `}</style>
 
       <div
         ref={bgRef}
-        className="bg-tracked"
+        className="bg-parallax"
         style={styles.bgLayer}
         onMouseMove={handlePageMouseMove}
       >
-        <div style={{ ...styles.blob, ...styles.blobA }} />
-        <div style={{ ...styles.blob, ...styles.blobB }} />
-        <div style={{ ...styles.blob, ...styles.blobC }} />
+        <div className="blob-inner" style={{ ...styles.blob, ...styles.blobA }} />
+        <div className="blob-inner" style={{ ...styles.blob, ...styles.blobB }} />
+        <div className="blob-inner" style={{ ...styles.blob, ...styles.blobC }} />
       </div>
 
       <div style={styles.contentLayer} onMouseMove={handlePageMouseMove}>
         <Container className="text-center" style={styles.container}>
           <div
             ref={panelRef}
-            className="glass-panel-tracked"
+            className="glass-panel-tilt"
             style={styles.glassPanel}
             onMouseMove={handlePanelMouseMove}
             onMouseLeave={handlePanelMouseLeave}
@@ -206,6 +213,7 @@ const styles = {
     position: "relative",
     zIndex: 2,
     maxWidth: 820,
+    perspective: "1000px",
   },
   glassPanel: {
     position: "relative",

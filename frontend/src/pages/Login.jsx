@@ -46,6 +46,8 @@ function Login() {
 
       if (res.data.role === "SUPPLIER") navigate("/dashboard/supplier");
       else navigate("/dashboard/customer");
+
+      window.dispatchEvent(new Event("authChange"));
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");
     }

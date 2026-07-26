@@ -375,8 +375,8 @@ function LiquidGlassLayout({
           box-shadow:0 4px 14px rgba(0,0,0,0.35);
         }
         @keyframes captionPulse{
-          0%, 40%   { opacity:0; transform:translate(0,-300%); }
-          46%, 92%  { opacity:1; transform:translate(0,-320%); }
+          0%, 10%   { opacity:1; transform:translate(0,-300%); }
+          46%, 92%  { opacity:0; transform:translate(0,-320%); }
           98%,100%  { opacity:0; transform:translate(0,-300%); }
         }
         .scene-station-caption-animated{

@@ -1,30 +1,53 @@
 import React, { useEffect, useState } from "react";
 import { Navbar, Nav, Container } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import ProfileSlidePanel from "./ProfileSlidePanel";
 
 function NavigationBar() {
   const [showProfile, setShowProfile] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [role, setRole] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
+  // Re-check auth on mount AND on every route change.
+  // Why: localStorage's own "storage" event only fires in OTHER browser tabs,
+  // never in the tab that made the change. Since login/logout both navigate to
+  // a new route right after touching localStorage, keying off `location`
+  // guarantees the navbar re-reads the token the moment the URL changes,
+  // without needing a manual page refresh.
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    setLoggedIn(!!token);
-  }, []);
+    setLoggedIn(!!localStorage.getItem("token"));
+    setRole(localStorage.getItem("role"));
+  }, [location]);
 
+  // Still listen for cross-tab changes and a same-tab custom event, in case
+  // auth state changes without a route change (e.g. token expiry handling).
   useEffect(() => {
-    const handleStorageChange = () => {
+    const syncAuth = () => {
       setLoggedIn(!!localStorage.getItem("token"));
+      setRole(localStorage.getItem("role"));
     };
-
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
+    window.addEventListener("storage", syncAuth);
+    window.addEventListener("authChange", syncAuth);
+    return () => {
+      window.removeEventListener("storage", syncAuth);
+      window.removeEventListener("authChange", syncAuth);
+    };
   }, []);
+
+  // Logged-in users should land on their dashboard, not the public landing page.
+  const homeHref = loggedIn
+    ? role === "SUPPLIER"
+      ? "/dashboard/supplier"
+      : "/dashboard/customer"
+    : "/";
 
   const handleLogout = () => {
     localStorage.clear();
     setLoggedIn(false);
+    setRole(null);
+    window.dispatchEvent(new Event("authChange"));
     navigate("/login");
   };
 
@@ -77,7 +100,7 @@ function NavigationBar() {
 
       <Navbar expand="lg" className="glass-navbar py-3">
         <Container fluid className="px-4">
-          <Navbar.Brand as={Link} to="/" className="glass-brand">
+          <Navbar.Brand as={Link} to={homeHref} className="glass-brand">
             Coolgrid EV
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="nav" className="glass-toggle" />
@@ -88,7 +111,7 @@ function NavigationBar() {
             >
               {!loggedIn ? (
                 <>
-                  <Nav.Link as={Link} to="/" className="glass-nav-link">
+                  <Nav.Link as={Link} to={homeHref} className="glass-nav-link">
                     Home
                   </Nav.Link>
                   <Nav.Link as={Link} to="/login" className="glass-nav-link">
@@ -103,7 +126,7 @@ function NavigationBar() {
                 </>
               ) : (
                 <>
-                  <Nav.Link as={Link} to="/" className="glass-nav-link">
+                  <Nav.Link as={Link} to={homeHref} className="glass-nav-link">
                     Home
                   </Nav.Link>
                   <Nav.Link
