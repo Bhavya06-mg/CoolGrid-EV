@@ -1,16 +1,10 @@
-import React, { useRef, useEffect } from "react";
-import { Container, Button } from "react-bootstrap";
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 function Home() {
   const navigate = useNavigate();
-  const panelRef = useRef(null);
-  const bgRef = useRef(null);
 
-  // If someone lands on "/" while already logged in (typed URL, bookmark,
-  // browser back button), send them straight to their dashboard instead of
-  // showing the public landing page again. useEffect + navigate(..., {replace:true})
-  // so it doesn't add a junk entry to browser history.
+  // Logged-in users go straight to their dashboard (typed URL, bookmark, back button).
   useEffect(() => {
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
@@ -21,262 +15,97 @@ function Home() {
     }
   }, [navigate]);
 
-  const handlePanelMouseMove = (e) => {
-    const panel = panelRef.current;
-    if (!panel) return;
-    const rect = panel.getBoundingClientRect();
-    const px = (e.clientX - rect.left) / rect.width;
-    const py = (e.clientY - rect.top) / rect.height;
-
-    const tiltX = (py - 0.5) * -6;
-    const tiltY = (px - 0.5) * 6;
-
-    panel.style.setProperty("--tiltX", `${tiltX}deg`);
-    panel.style.setProperty("--tiltY", `${tiltY}deg`);
-    panel.style.setProperty("--sx", `${px * 100}%`);
-    panel.style.setProperty("--sy", `${py * 100}%`);
-  };
-
-  const handlePanelMouseLeave = () => {
-    const panel = panelRef.current;
-    if (!panel) return;
-    panel.style.setProperty("--tiltX", `0deg`);
-    panel.style.setProperty("--tiltY", `0deg`);
-    panel.style.setProperty("--sx", `50%`);
-    panel.style.setProperty("--sy", `-20%`);
-  };
-
-  const handlePageMouseMove = (e) => {
-    const bg = bgRef.current;
-    if (!bg) return;
-    const px = (e.clientX / window.innerWidth - 0.5) * 2;
-    const py = (e.clientY / window.innerHeight - 0.5) * 2;
-    bg.style.setProperty("--px", `${px * -18}px`);
-    bg.style.setProperty("--py", `${py * -18}px`);
-  };
-
   return (
     <>
       <style>{`
-        html, body, #root {
-          height: 100%;
-          margin: 0;
+        .home-wrap { min-height: calc(100vh - 180px); display:flex; align-items:center; justify-content:center; padding: 24px 0 40px; }
+        .home-shell {
+          width: 100%; max-width: 1100px;
+          background: var(--cg-panel); border: 1px solid var(--cg-line);
+          border-radius: 22px; overflow: hidden;
+          display: grid; grid-template-columns: 1.05fr 0.95fr;
+          box-shadow: 0 30px 80px rgba(0,0,0,.55);
+          animation: homeIn .55s cubic-bezier(.22,1,.36,1) both;
         }
-        @keyframes float1 {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          50% { transform: translate(30px, -40px) scale(1.08); }
-        }
-        @keyframes float2 {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          50% { transform: translate(-40px, 30px) scale(1.1); }
-        }
-        @keyframes float3 {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          50% { transform: translate(20px, 40px) scale(0.95); }
-        }
-        .glass-cta:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 12px 32px rgba(56, 189, 248, 0.45), inset 0 1px 0 rgba(255,255,255,0.6);
-        }
-        .glass-cta:active {
-          transform: translateY(0px) scale(0.98);
-        }
+        @keyframes homeIn { from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:none;} }
 
-        .glass-panel-tilt {
-          --tiltX: 0deg;
-          --tiltY: 0deg;
-          --sx: 50%;
-          --sy: -20%;
-          transform: perspective(1000px) rotateX(var(--tiltX)) rotateY(var(--tiltY));
-          transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-          transform-style: preserve-3d;
+        .home-copy { padding: 64px 52px; display:flex; flex-direction:column; justify-content:center; }
+        .home-chip {
+          align-self:flex-start; display:inline-flex; align-items:center; gap:8px;
+          padding:6px 14px; border-radius:999px; margin-bottom:22px;
+          font-size:11px; font-weight:700; letter-spacing:1.6px; text-transform:uppercase;
+          color: var(--cg-green); background: var(--cg-green-soft);
         }
-        .glass-panel-tilt::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: radial-gradient(
-            260px circle at var(--sx) var(--sy),
-            rgba(255, 255, 255, 0.10),
-            transparent 70%
-          );
-          transition: background 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-          pointer-events: none;
-        }
+        .home-chip::before { content:""; width:7px; height:7px; border-radius:50%; background:var(--cg-green); box-shadow:0 0 8px 2px rgba(52,224,161,.6); }
+        .home-h1 { font-size: clamp(30px, 4vw, 44px); line-height:1.18; letter-spacing:-0.6px; margin-bottom:18px; }
+        .home-h1 span { color: var(--cg-green); }
+        .home-sub { color: var(--cg-muted); font-size:16px; line-height:1.7; max-width:480px; margin-bottom:32px; }
+        .home-cta { display:flex; gap:12px; flex-wrap:wrap; }
+        .home-cta a { text-decoration:none; }
+        .home-cta .cg-btn, .home-cta .cg-btn-ghost { padding: 13px 30px; font-size:15px; display:inline-block; }
 
-        .bg-parallax {
-          --px: 0px;
-          --py: 0px;
-        }
-        .bg-parallax .blob-inner {
-          transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-          transform: translate(var(--px), var(--py));
+        /* decorative dashboard preview */
+        .home-art { background: var(--cg-side); border-left:1px solid var(--cg-line); padding:34px; display:flex; flex-direction:column; gap:14px; justify-content:center; position:relative; overflow:hidden; }
+        .home-art::before { content:""; position:absolute; right:-90px; top:-90px; width:280px; height:280px; border-radius:50%; background: radial-gradient(circle, rgba(52,224,161,.2), transparent 70%); }
+        .home-map { position:relative; height:190px; border-radius:14px; overflow:hidden; background:#1a1b1c; }
+        .home-map svg { width:100%; height:100%; display:block; }
+        .home-cards { display:grid; grid-template-columns:1fr 1fr; gap:12px; position:relative; }
+        .home-mini { background: var(--cg-card); border:1px solid transparent; border-radius:14px; padding:14px; }
+        .home-mini.sel { border-color: var(--cg-green); box-shadow: 0 0 0 1px rgba(52,224,161,.25); }
+        .home-mini small { color: var(--cg-muted); font-size:10px; display:block; }
+        .home-mini b { font-size:18px; font-weight:500; display:block; margin:4px 0 8px; }
+        .home-mini span { font-size:12px; color: var(--cg-green); }
+
+        @media (max-width: 900px) {
+          .home-shell { grid-template-columns: 1fr; }
+          .home-art { display:none; }
+          .home-copy { padding: 40px 26px; }
         }
       `}</style>
 
-      <div
-        ref={bgRef}
-        className="bg-parallax"
-        style={styles.bgLayer}
-        onMouseMove={handlePageMouseMove}
-      >
-        <div className="blob-inner" style={{ ...styles.blob, ...styles.blobA }} />
-        <div className="blob-inner" style={{ ...styles.blob, ...styles.blobB }} />
-        <div className="blob-inner" style={{ ...styles.blob, ...styles.blobC }} />
-      </div>
-
-      <div style={styles.contentLayer} onMouseMove={handlePageMouseMove}>
-        <Container className="text-center" style={styles.container}>
-          <div
-            ref={panelRef}
-            className="glass-panel-tilt"
-            style={styles.glassPanel}
-            onMouseMove={handlePanelMouseMove}
-            onMouseLeave={handlePanelMouseLeave}
-          >
-            <div style={styles.specular} />
-
-            <div style={styles.eyebrow}>Coolgrid EV</div>
-
-            <h1 style={styles.heading}>
-              Charging &amp; Credit Exchange,<br />reimagined
+      <div className="home-wrap">
+        <div className="home-shell">
+          <div className="home-copy">
+            <div className="home-chip">Coolgrid EV</div>
+            <h1 className="home-h1">
+              Charging &amp; credit exchange,<br /><span>reimagined</span>
             </h1>
-
-            <p style={styles.subtext}>
-              Find nearby charging stations, connect with suppliers, and
-              exchange energy credits — all in one place.
+            <p className="home-sub">
+              Find nearby charging stations, connect with suppliers, and exchange
+              energy credits — all in one place.
             </p>
-
-            <Link to="/login" style={{ textDecoration: "none" }}>
-              <Button className="glass-cta" style={styles.ctaButton}>
-                Get started
-              </Button>
-            </Link>
+            <div className="home-cta">
+              <Link to="/login"><button className="cg-btn">Get started</button></Link>
+              <Link to="/register/customer"><button className="cg-btn-ghost">Create account</button></Link>
+            </div>
           </div>
-        </Container>
+
+          <div className="home-art" aria-hidden="true">
+            <div className="home-map">
+              <svg viewBox="0 0 400 190" preserveAspectRatio="xMidYMid slice">
+                <rect width="400" height="190" fill="#1a1b1c" />
+                <g stroke="#2a2c2d" strokeWidth="8" fill="none">
+                  <path d="M0 40H400M0 100H400M0 160H400M60 0V190M170 0V190M290 0V190" />
+                </g>
+                <path d="M30 30 L170 70 L190 150 L350 125" stroke="#34e0a1" strokeWidth="3.5" fill="none" strokeLinejoin="round" strokeLinecap="round" />
+                <circle cx="30" cy="30" r="6" fill="#34e0a1" stroke="#0b0b0c" strokeWidth="2" />
+                {[[170, 70], [350, 125]].map(([x, y]) => (
+                  <g key={x} transform={`translate(${x},${y})`}>
+                    <path d="M0 0c-11-14-14-19-14-25a14 14 0 1 1 28 0c0 6-3 11-14 25z" fill="#34e0a1" stroke="#0b0b0c" strokeWidth="1.5" />
+                    <path d="M2-31l-6 10h4l-1 8 6-10h-4z" fill="#04251a" />
+                  </g>
+                ))}
+              </svg>
+            </div>
+            <div className="home-cards">
+              <div className="home-mini sel"><small>Nearest station</small><b>0.9 km</b><span>₹99 / unit</span></div>
+              <div className="home-mini"><small>Units available</small><b>721</b><span>Online now</span></div>
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );
 }
-
-const styles = {
-  bgLayer: {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    width: "100vw",
-    height: "100vh",
-    overflow: "hidden",
-    zIndex: -1,
-    background: "linear-gradient(160deg, #0b1220 0%, #10192e 45%, #0a1420 100%)",
-  },
-  contentLayer: {
-    minHeight: "100vh",
-    width: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    position: "relative",
-  },
-  blob: {
-    position: "absolute",
-    borderRadius: "50%",
-    filter: "blur(70px)",
-    opacity: 0.55,
-    pointerEvents: "none",
-  },
-  blobA: {
-    width: 420,
-    height: 420,
-    top: "-8%",
-    left: "-6%",
-    background: "radial-gradient(circle, #38bdf8, transparent 70%)",
-    animation: "float1 14s ease-in-out infinite",
-  },
-  blobB: {
-    width: 380,
-    height: 380,
-    bottom: "-10%",
-    right: "-8%",
-    background: "radial-gradient(circle, #34d399, transparent 70%)",
-    animation: "float2 16s ease-in-out infinite",
-  },
-  blobC: {
-    width: 300,
-    height: 300,
-    top: "35%",
-    right: "18%",
-    background: "radial-gradient(circle, #a78bfa, transparent 70%)",
-    animation: "float3 12s ease-in-out infinite",
-  },
-  container: {
-    position: "relative",
-    zIndex: 2,
-    maxWidth: 820,
-    perspective: "1000px",
-  },
-  glassPanel: {
-    position: "relative",
-    padding: "68px 64px",
-    borderRadius: 32,
-    background: "rgba(255, 255, 255, 0.06)",
-    backdropFilter: "blur(24px)",
-    WebkitBackdropFilter: "blur(24px)",
-    border: "1px solid rgba(255, 255, 255, 0.16)",
-    boxShadow:
-      "0 8px 40px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.15)",
-    overflow: "hidden",
-  },
-  specular: {
-    position: "absolute",
-    top: 0,
-    left: "10%",
-    right: "10%",
-    height: 1,
-    background:
-      "linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent)",
-  },
-  eyebrow: {
-    display: "inline-block",
-    fontSize: 12,
-    letterSpacing: 3,
-    textTransform: "uppercase",
-    color: "#7dd3fc",
-    fontWeight: 600,
-    marginBottom: 18,
-    padding: "5px 14px",
-    borderRadius: 999,
-    background: "rgba(56, 189, 248, 0.12)",
-    border: "1px solid rgba(125, 211, 252, 0.3)",
-  },
-  heading: {
-    fontSize: "clamp(32px, 4.5vw, 46px)",
-    fontWeight: 600,
-    color: "#f3f6fb",
-    lineHeight: 1.25,
-    marginBottom: 20,
-    letterSpacing: "-0.5px",
-  },
-  subtext: {
-    fontSize: 17,
-    lineHeight: 1.7,
-    color: "rgba(230, 235, 244, 0.7)",
-    maxWidth: 540,
-    margin: "0 auto 38px",
-  },
-  ctaButton: {
-    border: "1px solid rgba(255,255,255,0.35)",
-    background:
-      "linear-gradient(180deg, rgba(56,189,248,0.85), rgba(59,130,246,0.75))",
-    color: "#fff",
-    fontWeight: 600,
-    fontSize: 16,
-    padding: "14px 40px",
-    borderRadius: 999,
-    boxShadow:
-      "0 6px 20px rgba(56, 189, 248, 0.35), inset 0 1px 0 rgba(255,255,255,0.5)",
-    transition: "transform 0.15s ease, box-shadow 0.15s ease",
-  },
-};
 
 export default Home;

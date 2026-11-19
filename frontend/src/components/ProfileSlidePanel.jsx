@@ -137,9 +137,7 @@ export default function ProfileSlidePanel({ show, onClose }) {
           position: fixed;
           top: 0; left: 0;
           width: 100vw; height: 100vh;
-          background: rgba(6, 10, 18, 0.55);
-          backdrop-filter: blur(4px);
-          -webkit-backdrop-filter: blur(4px);
+          background: rgba(0,0,0,0.6);
           z-index: 999;
         }
         .profile-glass-panel {
@@ -147,15 +145,13 @@ export default function ProfileSlidePanel({ show, onClose }) {
           top: 0; right: 0;
           width: 400px;
           height: 100vh;
-          background: rgba(16, 25, 46, 0.78);
-          backdrop-filter: blur(26px);
-          -webkit-backdrop-filter: blur(26px);
-          border-left: 1px solid rgba(255,255,255,0.14);
-          box-shadow: -8px 0 40px rgba(0,0,0,0.5), inset 1px 0 0 rgba(255,255,255,0.05);
+          background: #111213;
+          border-left: 1px solid #232526;
+          box-shadow: -8px 0 40px rgba(0,0,0,0.5), inset 1px 0 0 #161718;
           z-index: 1000;
           padding: 22px 22px 28px;
           overflow-y: auto;
-          color: #f3f6fb;
+          color: #f2f4f3;
           display: flex;
           flex-direction: column;
         }
@@ -167,16 +163,16 @@ export default function ProfileSlidePanel({ show, onClose }) {
         }
         .profile-header h3 {
           font-weight: 600;
-          color: #f3f6fb;
+          color: #f2f4f3;
           margin: 0;
           font-size: 20px;
         }
         .profile-x-btn {
           width: 34px; height: 34px;
           border-radius: 50%;
-          border: 1px solid rgba(255,255,255,0.18);
-          background: rgba(255,255,255,0.06);
-          color: rgba(230,235,244,0.85);
+          border: 1px solid #232526;
+          background: #161718;
+          color: #9aa3a0;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -186,13 +182,13 @@ export default function ProfileSlidePanel({ show, onClose }) {
           transition: background 0.15s ease, transform 0.15s ease;
         }
         .profile-x-btn:hover {
-          background: rgba(255,255,255,0.14);
+          background: #232526;
           transform: rotate(90deg);
         }
 
         .profile-section {
-          background: rgba(255,255,255,0.035);
-          border: 1px solid rgba(255,255,255,0.09);
+          background: #161718;
+          border: 1px solid #232526;
           border-radius: 16px;
           padding: 18px;
           margin-bottom: 16px;
@@ -204,21 +200,21 @@ export default function ProfileSlidePanel({ show, onClose }) {
           margin-bottom: 14px;
         }
         .profile-section-title {
-          color: rgba(125,211,252,0.85);
+          color: rgba(52,224,161,0.85);
           font-size: 11.5px;
           letter-spacing: 1.2px;
           text-transform: uppercase;
           font-weight: 700;
         }
-        .profile-section-title.amber { color: rgba(251,191,143,0.9); }
+        .profile-section-title.amber { color: rgba(52,224,161,0.9); }
 
         .profile-edit-btn {
           display: flex;
           align-items: center;
           gap: 5px;
-          background: rgba(56,189,248,0.14);
-          border: 1px solid rgba(125,211,252,0.35);
-          color: #7dd3fc;
+          background: rgba(52,224,161,0.14);
+          border: 1px solid rgba(52,224,161,0.35);
+          color: #34e0a1;
           font-size: 11.5px;
           font-weight: 700;
           letter-spacing: 0.4px;
@@ -227,40 +223,39 @@ export default function ProfileSlidePanel({ show, onClose }) {
           cursor: pointer;
           transition: background 0.15s ease;
         }
-        .profile-edit-btn:hover { background: rgba(56,189,248,0.24); }
+        .profile-edit-btn:hover { background: rgba(52,224,161,0.24); }
 
         .profile-avatar {
           width: 84px; height: 84px;
           border-radius: 50%;
           object-fit: cover;
-          border: 2px solid rgba(56,189,248,0.5);
-          box-shadow: 0 0 20px rgba(56,189,248,0.25);
+          border: 2px solid rgba(52,224,161,0.5);
+          box-shadow: 0 0 20px rgba(52,224,161,0.25);
         }
         .profile-glass-input {
-          background: rgba(255,255,255,0.06) !important;
-          border: 1px solid rgba(255,255,255,0.22) !important;
-          color: #f3f6fb !important;
+          background: #161718 !important;
+          border: 1px solid #232526 !important;
+          color: #f2f4f3 !important;
           border-radius: 10px !important;
           padding: 10px 14px !important;
-          backdrop-filter: blur(4px);
         }
-        .profile-glass-input::placeholder { color: rgba(230,235,244,0.4); }
+        .profile-glass-input::placeholder { color: #7d8582; }
         .profile-glass-input:focus {
-          background: rgba(255,255,255,0.09) !important;
-          border-color: rgba(56,189,248,0.65) !important;
-          box-shadow: 0 0 0 3px rgba(56,189,248,0.18) !important;
+          background: #232526 !important;
+          border-color: rgba(52,224,161,0.65) !important;
+          box-shadow: 0 0 0 3px rgba(52,224,161,0.18) !important;
           color: #fff !important;
         }
         .profile-glass-input::file-selector-button {
-          background: rgba(56,189,248,0.18);
-          color: #7dd3fc;
-          border: 1px solid rgba(125,211,252,0.3);
+          background: rgba(52,224,161,0.18);
+          color: #34e0a1;
+          border: 1px solid rgba(52,224,161,0.3);
           border-radius: 8px;
           padding: 5px 10px;
           margin-right: 10px;
         }
         .profile-glass-label {
-          color: rgba(230,235,244,0.7);
+          color: #9aa3a0;
           font-size: 12px;
           font-weight: 600;
           letter-spacing: 0.3px;
@@ -273,20 +268,20 @@ export default function ProfileSlidePanel({ show, onClose }) {
           justify-content: space-between;
           align-items: baseline;
           padding: 10px 2px;
-          border-bottom: 1px solid rgba(255,255,255,0.07);
+          border-bottom: 1px solid #161718;
         }
         .profile-view-row:last-child { border-bottom: none; }
         .profile-view-label {
-          color: rgba(230,235,244,0.5);
+          color: #7d8582;
           font-size: 12.5px;
         }
         .profile-view-value {
-          color: #f3f6fb;
+          color: #f2f4f3;
           font-size: 14.5px;
           font-weight: 600;
         }
         .profile-view-value.empty {
-          color: rgba(230,235,244,0.35);
+          color: #7d8582;
           font-weight: 400;
           font-style: italic;
         }
@@ -301,46 +296,46 @@ export default function ProfileSlidePanel({ show, onClose }) {
           transform: translateY(-50%);
           background: none;
           border: none;
-          color: rgba(230,235,244,0.55);
+          color: #7d8582;
           font-size: 12px;
           font-weight: 600;
           cursor: pointer;
           padding: 4px 6px;
         }
-        .profile-password-toggle:hover { color: #7dd3fc; }
+        .profile-password-toggle:hover { color: #34e0a1; }
 
         .profile-save-btn {
           border: none !important;
-          background: linear-gradient(180deg, rgba(56,189,248,0.9), rgba(59,130,246,0.8)) !important;
+          background: #34e0a1 !important;
           color: #fff !important;
           font-weight: 600 !important;
           border-radius: 999px !important;
           padding: 10px !important;
-          box-shadow: 0 6px 18px rgba(56,189,248,0.3), inset 0 1px 0 rgba(255,255,255,0.4);
+          box-shadow: 0 6px 18px rgba(52,224,161,0.3), inset 0 1px 0 transparent;
           transition: transform 0.2s ease, opacity 0.2s ease;
         }
         .profile-save-btn:hover:not(:disabled) { transform: translateY(-2px); }
         .profile-save-btn:disabled { opacity: 0.7; }
 
         .profile-cancel-btn {
-          border: 1px solid rgba(255,255,255,0.25) !important;
-          background: rgba(255,255,255,0.05) !important;
-          color: rgba(230,235,244,0.85) !important;
+          border: 1px solid #232526 !important;
+          background: #161718 !important;
+          color: #9aa3a0 !important;
           font-weight: 600 !important;
           border-radius: 999px !important;
           padding: 10px !important;
           transition: background 0.2s ease;
         }
-        .profile-cancel-btn:hover { background: rgba(255,255,255,0.11) !important; }
+        .profile-cancel-btn:hover { background: #232526 !important; }
 
         .profile-password-btn {
           border: none !important;
-          background: linear-gradient(180deg, rgba(245,158,11,0.9), rgba(217,119,6,0.8)) !important;
-          color: #2b1503 !important;
+          background: #34e0a1 !important;
+          color: #04251a !important;
           font-weight: 600 !important;
           border-radius: 999px !important;
           padding: 10px !important;
-          box-shadow: 0 6px 18px rgba(201,121,61,0.3), inset 0 1px 0 rgba(255,255,255,0.4);
+          box-shadow: 0 6px 18px rgba(52,224,161,0.3), inset 0 1px 0 transparent;
           transition: transform 0.2s ease, opacity 0.2s ease;
         }
         .profile-password-btn:hover:not(:disabled) { transform: translateY(-2px); }
@@ -356,12 +351,11 @@ export default function ProfileSlidePanel({ show, onClose }) {
           font-size: 13.5px;
           font-weight: 600;
           text-align: center;
-          backdrop-filter: blur(10px);
           z-index: 10;
         }
         .profile-toast.success {
-          background: rgba(34,197,94,0.18);
-          border: 1px solid rgba(74,222,128,0.4);
+          background: rgba(31,168,116,0.18);
+          border: 1px solid rgba(52,224,161,0.4);
           color: #86efac;
         }
         .profile-toast.error {
@@ -371,7 +365,7 @@ export default function ProfileSlidePanel({ show, onClose }) {
         }
 
         .profile-skeleton {
-          background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
+          background: linear-gradient(90deg, #161718 25%, #232526 50%, #161718 75%);
           background-size: 200% 100%;
           animation: shimmer 1.4s infinite;
           border-radius: 10px;

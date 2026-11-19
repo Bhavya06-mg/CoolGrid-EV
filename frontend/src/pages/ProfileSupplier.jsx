@@ -30,12 +30,13 @@ export default function ProfileSupplier() {
     }
   };
 
-  if (!user) return <p>Loading...</p>;
+  if (!user) return <p className="text-center mt-5" style={{ color: "var(--cg-muted)" }}>Loading...</p>;
 
   return (
-    <Container className="mt-5">
-      <Card className="p-4 shadow">
-        <h3>🔧 Supplier Profile</h3>
+    <Container className="mt-5" style={{ maxWidth: 640 }}>
+      <Card className="p-4">
+        <div className="cg-label">Account</div>
+        <h3 style={{ marginBottom: 4 }}>Supplier Profile</h3>
         {msg && <Alert variant="info" className="mt-3">{msg}</Alert>}
 
         <Form>
@@ -85,7 +86,7 @@ export default function ProfileSupplier() {
             />
           </Form.Group>
 
-          <Button className="mt-4" onClick={handleUpdate}>
+          <Button className="mt-4 cg-btn" onClick={handleUpdate}>
             Save Changes
           </Button>
         </Form>

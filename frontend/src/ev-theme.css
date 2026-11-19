@@ -1,0 +1,151 @@
+/* ==========================================================
+   Coolgrid EV — shared "EV Hub" theme
+   Imported once in index.js. Pages reuse these tokens/classes.
+   ========================================================== */
+:root {
+  --cg-bg: #0b0b0c;
+  --cg-side: #0e0f10;
+  --cg-panel: #111213;
+  --cg-card: #161718;
+  --cg-line: #232526;
+  --cg-text: #f2f4f3;
+  --cg-muted: #7d8582;
+  --cg-green: #34e0a1;
+  --cg-green-d: #1fa874;
+  --cg-green-soft: rgba(52, 224, 161, 0.14);
+  --cg-red: #f87171;
+  --cg-amber: #fbbf24;
+  --cg-radius: 16px;
+}
+
+html, body, #root { min-height: 100%; }
+
+body {
+  background: var(--cg-bg) !important;
+  color: var(--cg-text);
+  font-family: "DM Sans", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+body.dark-mode { background: var(--cg-bg) !important; color: var(--cg-text) !important; }
+
+a { color: var(--cg-green); }
+a:hover { color: #5df0b8; }
+h1, h2, h3, h4, h5, h6 { color: var(--cg-text); font-weight: 600; }
+hr { border-color: var(--cg-line); opacity: 1; }
+
+/* ---------- Reusable pieces ---------- */
+.cg-panel {
+  background: var(--cg-panel);
+  border-radius: var(--cg-radius);
+  padding: 20px;
+}
+.cg-card {
+  background: var(--cg-card);
+  border: 1px solid transparent;
+  border-radius: 14px;
+  padding: 16px;
+}
+.cg-label {
+  font-size: 10px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--cg-muted);
+  font-weight: 600;
+}
+.cg-btn {
+  background: var(--cg-green);
+  color: #04251a;
+  border: 0;
+  border-radius: 10px;
+  font-weight: 700;
+  padding: 10px 22px;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+.cg-btn:hover { background: #5df0b8; color: #04251a; transform: translateY(-1px); }
+.cg-btn:active { transform: translateY(0) scale(0.99); }
+.cg-btn-ghost {
+  background: var(--cg-card);
+  color: var(--cg-text);
+  border: 1px solid var(--cg-line);
+  border-radius: 10px;
+  font-weight: 600;
+  padding: 10px 22px;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+.cg-btn-ghost:hover { border-color: var(--cg-green); color: var(--cg-green); }
+
+/* ---------- Bootstrap overrides (site-wide) ---------- */
+.card {
+  background: var(--cg-panel) !important;
+  color: var(--cg-text) !important;
+  border: 1px solid var(--cg-line) !important;
+  border-radius: var(--cg-radius) !important;
+  box-shadow: none !important;
+}
+.card .card-title { color: var(--cg-text); }
+
+.form-control, .form-select {
+  background-color: var(--cg-bg) !important;
+  color: var(--cg-text) !important;
+  border: 1px solid var(--cg-line) !important;
+  border-radius: 10px !important;
+}
+.form-control::placeholder { color: #5f6764 !important; }
+.form-control:focus, .form-select:focus {
+  border-color: var(--cg-green) !important;
+  box-shadow: 0 0 0 3px var(--cg-green-soft) !important;
+}
+.form-control:disabled, .form-control[readonly] { background-color: var(--cg-card) !important; color: var(--cg-muted) !important; }
+.form-select { --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%237d8582' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e"); }
+select option { background: var(--cg-card) !important; color: var(--cg-text) !important; }
+.form-label { color: var(--cg-muted); font-size: 12px; font-weight: 600; letter-spacing: 0.4px; }
+.form-check-input { background-color: var(--cg-bg); border-color: var(--cg-line); }
+.form-check-input:checked { background-color: var(--cg-green); border-color: var(--cg-green); }
+.form-check-label { color: var(--cg-text); }
+
+.btn-primary, .btn-success {
+  background: var(--cg-green) !important;
+  border-color: var(--cg-green) !important;
+  color: #04251a !important;
+  font-weight: 700;
+  border-radius: 10px;
+}
+.btn-primary:hover, .btn-success:hover { background: #5df0b8 !important; border-color: #5df0b8 !important; }
+.btn-secondary, .btn-outline-secondary, .btn-light {
+  background: var(--cg-card) !important;
+  border: 1px solid var(--cg-line) !important;
+  color: var(--cg-text) !important;
+  border-radius: 10px;
+}
+.btn-warning { background: var(--cg-amber) !important; border-color: var(--cg-amber) !important; color: #2b1d00 !important; border-radius: 10px; font-weight: 700; }
+.btn-danger { background: var(--cg-red) !important; border-color: var(--cg-red) !important; color: #2b0505 !important; border-radius: 10px; font-weight: 700; }
+
+.alert {
+  background: var(--cg-card) !important;
+  color: var(--cg-text) !important;
+  border: 1px solid var(--cg-line) !important;
+  border-radius: 12px !important;
+}
+.alert-info, .alert-success { border-color: rgba(52, 224, 161, 0.4) !important; }
+.alert-danger { border-color: rgba(248, 113, 113, 0.5) !important; }
+.alert-warning { border-color: rgba(251, 191, 36, 0.5) !important; }
+
+.modal-content {
+  background: var(--cg-panel) !important;
+  color: var(--cg-text) !important;
+  border: 1px solid var(--cg-line) !important;
+  border-radius: var(--cg-radius) !important;
+}
+.modal-header, .modal-footer { border-color: var(--cg-line) !important; }
+.modal-title { color: var(--cg-text); }
+.btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+
+.table { --bs-table-bg: transparent; --bs-table-color: var(--cg-text); --bs-table-border-color: var(--cg-line); color: var(--cg-text); }
+.badge.bg-success { background: var(--cg-green-soft) !important; color: var(--cg-green) !important; }
+
+.spinner-border { color: var(--cg-green); }
+
+/* scrollbars */
+* { scrollbar-width: thin; scrollbar-color: #2a2c2d transparent; }

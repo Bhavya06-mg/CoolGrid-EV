@@ -19,12 +19,12 @@ const glassStyles = {
     height: "100vh",
     overflow: "hidden",
     zIndex: -1,
-    background: "linear-gradient(160deg, #0b1220 0%, #10192e 45%, #0a1420 100%)",
+    background: "#0b0b0c",
   },
-  blob: { position: "absolute", borderRadius: "50%", filter: "blur(70px)", opacity: 0.5, pointerEvents: "none" },
-  blobA: { width: 380, height: 380, top: "-8%", left: "-6%", background: "radial-gradient(circle, #34d399, transparent 70%)", animation: "float1 15s ease-in-out infinite" },
-  blobB: { width: 340, height: 340, bottom: "-8%", right: "-8%", background: "radial-gradient(circle, #38bdf8, transparent 70%)", animation: "float2 17s ease-in-out infinite" },
-  blobC: { width: 260, height: 260, top: "40%", right: "20%", background: "radial-gradient(circle, #a78bfa, transparent 70%)", animation: "float3 13s ease-in-out infinite" },
+  blob: { position: "absolute", borderRadius: "50%", display: "none", opacity: 0.5, pointerEvents: "none" },
+  blobA: { width: 380, height: 380, top: "-8%", left: "-6%", background: "radial-gradient(circle, #34e0a1, transparent 70%)", animation: "float1 15s ease-in-out infinite" },
+  blobB: { width: 340, height: 340, bottom: "-8%", right: "-8%", background: "radial-gradient(circle, #34e0a1, transparent 70%)", animation: "float2 17s ease-in-out infinite" },
+  blobC: { width: 260, height: 260, top: "40%", right: "20%", background: "radial-gradient(circle, #34e0a1, transparent 70%)", animation: "float3 13s ease-in-out infinite" },
 };
 
 const GlassBackground = () => (
@@ -36,87 +36,81 @@ const GlassBackground = () => (
       @keyframes float3 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(20px,40px) scale(0.95);} }
 
       .booking-glass-card {
-        background: rgba(255,255,255,0.06) !important;
-        backdrop-filter: blur(24px);
-        -webkit-backdrop-filter: blur(24px);
-        border: 1px solid rgba(255,255,255,0.15) !important;
+        background: #161718 !important;
+        border: 1px solid #232526 !important;
         border-radius: 22px !important;
-        box-shadow: 0 10px 34px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08);
-        color: #f3f6fb;
+        box-shadow: 0 10px 34px rgba(0,0,0,0.4), inset 0 1px 0 #161718;
+        color: #f2f4f3;
         padding: 30px !important;
       }
-      .booking-heading { color: #f3f6fb; font-weight: 600; }
-      .booking-text { color: rgba(230,235,244,0.8); }
+      .booking-heading { color: #f2f4f3; font-weight: 600; }
+      .booking-text { color: #9aa3a0; }
 
       .booking-alert-info {
-        background: rgba(56,189,248,0.14) !important;
-        border: 1px solid rgba(125,211,252,0.35) !important;
-        color: #bfe8fd !important;
+        background: rgba(52,224,161,0.14) !important;
+        border: 1px solid rgba(52,224,161,0.35) !important;
+        color: #34e0a1 !important;
         border-radius: 14px !important;
-        backdrop-filter: blur(10px);
       }
       .booking-alert-success {
-        background: rgba(34,197,94,0.15) !important;
-        border: 1px solid rgba(74,222,128,0.4) !important;
-        color: #a7f3c8 !important;
+        background: rgba(31,168,116,0.15) !important;
+        border: 1px solid rgba(52,224,161,0.4) !important;
+        color: #34e0a1 !important;
         border-radius: 14px !important;
-        backdrop-filter: blur(10px);
       }
       .booking-alert-danger {
         background: rgba(220,38,38,0.15) !important;
         border: 1px solid rgba(248,113,113,0.4) !important;
         color: #fca5a5 !important;
         border-radius: 14px !important;
-        backdrop-filter: blur(10px);
       }
       .booking-alert-warning {
         background: rgba(245,158,11,0.15) !important;
-        border: 1px solid rgba(251,191,143,0.4) !important;
-        color: #fde3b8 !important;
+        border: 1px solid rgba(52,224,161,0.4) !important;
+        color: #34e0a1 !important;
         border-radius: 14px !important;
-        backdrop-filter: blur(10px);
       }
 
       .booking-otp {
-        color: #6ee7b7;
+        color: #34e0a1;
         font-size: 1.8rem;
         font-weight: 700;
         letter-spacing: 2px;
-        text-shadow: 0 0 16px rgba(110,231,183,0.5);
+        text-shadow: 0 0 16px rgba(52,224,161,0.5);
       }
 
       .booking-btn-primary {
         border: none !important;
-        background: linear-gradient(180deg, rgba(56,189,248,0.9), rgba(59,130,246,0.8)) !important;
+        background: #34e0a1 !important;
         color: #fff !important;
         font-weight: 600 !important;
         border-radius: 999px !important;
         padding: 10px 26px !important;
-        box-shadow: 0 6px 18px rgba(56,189,248,0.3), inset 0 1px 0 rgba(255,255,255,0.4);
+        box-shadow: 0 6px 18px rgba(52,224,161,0.3), inset 0 1px 0 transparent;
         transition: transform 0.2s ease;
       }
       .booking-btn-primary:hover { transform: translateY(-2px); }
 
       .booking-btn-success {
         border: none !important;
-        background: linear-gradient(180deg, rgba(74,222,128,0.9), rgba(34,197,94,0.8)) !important;
-        color: #06210f !important;
+        background: #34e0a1 !important;
+        color: #04251a !important;
         font-weight: 600 !important;
         border-radius: 999px !important;
         padding: 10px 26px !important;
-        box-shadow: 0 6px 18px rgba(52,211,153,0.3), inset 0 1px 0 rgba(255,255,255,0.4);
+        box-shadow: 0 6px 18px rgba(52,224,161,0.3), inset 0 1px 0 transparent;
         transition: transform 0.2s ease;
       }
       .booking-btn-success:hover { transform: translateY(-2px); }
 
       .booking-btn-amber {
         border: none !important;
-        background: linear-gradient(180deg, rgba(245,158,11,0.9), rgba(217,119,6,0.8)) !important;
-        color: #2b1503 !important;
+        background: #34e0a1 !important;
+        color: #04251a !important;
         font-weight: 600 !important;
         border-radius: 999px !important;
         padding: 10px 26px !important;
-        box-shadow: 0 6px 18px rgba(201,121,61,0.3), inset 0 1px 0 rgba(255,255,255,0.4);
+        box-shadow: 0 6px 18px rgba(52,224,161,0.3), inset 0 1px 0 transparent;
         transition: transform 0.2s ease;
       }
       .booking-btn-amber:hover { transform: translateY(-2px); }
@@ -125,8 +119,8 @@ const GlassBackground = () => (
         display: inline-block;
         padding: 14px;
         border-radius: 18px;
-        background: rgba(255,255,255,0.08);
-        border: 1px solid rgba(255,255,255,0.18);
+        background: #161718;
+        border: 1px solid #232526;
         box-shadow: 0 8px 24px rgba(0,0,0,0.35);
       }
     `}</style>
@@ -362,7 +356,7 @@ const handlePaymentDone = async () => {
       <div style={glassStyles.pageWrap}>
         <GlassBackground />
         <Container className="text-center" style={{ position: "relative", zIndex: 1, paddingTop: 120 }}>
-          <Spinner animation="border" style={{ color: "#38bdf8" }} />
+          <Spinner animation="border" style={{ color: "#34e0a1" }} />
           <p className="booking-text mt-3">Waiting for supplier approval...</p>
         </Container>
       </div>
@@ -393,7 +387,7 @@ const handlePaymentDone = async () => {
 
           {status === "PENDING" && (
             <>
-              <Spinner animation="grow" style={{ color: "#38bdf8" }} />
+              <Spinner animation="grow" style={{ color: "#34e0a1" }} />
               <p className="booking-text mt-2">⏳ Waiting for supplier approval...</p>
             </>
           )}

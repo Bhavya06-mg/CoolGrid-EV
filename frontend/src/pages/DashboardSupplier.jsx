@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Button, Alert, Modal } from "react-bootstrap";
+import { Alert, Modal } from "react-bootstrap";
 import axios from "axios";
 import io from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import "bootstrap/dist/css/bootstrap.min.css";
 
 const socket = io("https://coolgrid-ev-1.onrender.com");
 
@@ -13,22 +12,11 @@ function DashboardSupplier() {
   const [requests, setRequests] = useState([]);
   const [showStats, setShowStats] = useState(false);
   const [stats, setStats] = useState(null);
-  const [darkMode, setDarkMode] = useState(false);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Load dark mode
-    const dm = localStorage.getItem("darkMode") === "true";
-    setDarkMode(dm);
-
-    if (dm) document.body.classList.add("dark-mode");
-    else document.body.classList.remove("dark-mode");
-  }, []);
-
-  useEffect(() => {
     const id = localStorage.getItem("supplierId");
-    console.log("Supplier ID from localStorage:", localStorage.getItem("supplierId"));
     if (!id) return;
 
     setSupplierId(id);
@@ -41,6 +29,8 @@ function DashboardSupplier() {
     return () => socket.off("newChargingRequest");
   }, []);
 
+  // (kept from the original; opens the quick-stats modal)
+  // eslint-disable-next-line no-unused-vars
   const fetchStats = async () => {
     try {
       const response = await axios.get(`/api/suppliers/stats/${supplierId}`);
@@ -59,7 +49,6 @@ function DashboardSupplier() {
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
       navigate(`/supplier/request-details/${res.data.request._id}`);
     } catch (err) {
       alert("Error accepting request");
@@ -80,111 +69,79 @@ function DashboardSupplier() {
   };
 
   return (
-    <div style={styles.pageWrap}>
+    <div className="sd-page">
       <style>{`
-        html, body, #root { height: 100%; margin: 0; }
-        @keyframes float1 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(30px,-40px) scale(1.08);} }
-        @keyframes float2 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(-40px,30px) scale(1.1);} }
-        @keyframes float3 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(20px,40px) scale(0.95);} }
+        .sd-page { padding: 8px 0 48px; }
+        .sd-shell { max-width: 1280px; margin: 0 auto; background: var(--cg-bg); border-radius: 18px; padding: 22px; box-shadow: 0 30px 80px rgba(0,0,0,.45), 0 0 0 1px #1d1f20; }
+        .sd-head { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:18px; }
+        .sd-crumb { font-size:10px; color: var(--cg-muted); }
+        .sd-title { font-size:22px; margin:2px 0 0; }
+        .sd-grid { display:grid; grid-template-columns: minmax(0,1fr) 300px; gap:16px; }
+        .sd-hero { background: var(--cg-panel); border-radius:16px; padding:28px; min-height:300px; position:relative; overflow:hidden; display:flex; flex-direction:column; justify-content:center; }
+        .sd-hero::before { content:""; position:absolute; right:-90px; top:-90px; width:300px; height:300px; border-radius:50%; background: radial-gradient(circle, rgba(52,224,161,.18), transparent 70%); }
+        .sd-hero h2 { font-size:22px; margin-bottom:8px; position:relative; }
+        .sd-hero p { color: var(--cg-muted); max-width:520px; position:relative; margin-bottom:22px; }
+        .sd-live { display:inline-flex; align-items:center; gap:8px; font-size:12px; color: var(--cg-green); background: var(--cg-green-soft); border-radius:999px; padding:6px 14px; align-self:flex-start; margin-bottom:16px; position:relative; }
+        .sd-live::before { content:""; width:7px; height:7px; border-radius:50%; background: var(--cg-green); box-shadow:0 0 8px 2px rgba(52,224,161,.6); }
+        .sd-actions { display:flex; gap:10px; flex-wrap:wrap; position:relative; }
+        .sd-side { display:flex; flex-direction:column; gap:12px; }
+        .sd-box { background: var(--cg-card); border-radius:14px; padding:16px; font-size:11px; color: var(--cg-muted); }
+        .sd-box b { display:block; color: var(--cg-text); font-size:22px; font-weight:500; margin-top:6px; }
+        .sd-box b.g { color: var(--cg-green); }
 
-        .glass-heading { color: #f3f6fb; font-weight: 600; }
-        .glass-subtext { color: rgba(230,235,244,0.65); }
+        /* incoming request toasts */
+        .sd-toasts { position: fixed; top: 90px; right: 30px; z-index: 2000; width: 340px; }
+        .sd-request { background: var(--cg-panel) !important; border: 1px solid var(--cg-green) !important; border-radius: 14px !important; color: var(--cg-text) !important; box-shadow: 0 14px 40px rgba(0,0,0,.6), 0 0 0 1px rgba(52,224,161,.2); }
+        .sd-request strong { color: var(--cg-green); }
+        .sd-accept { background: var(--cg-green); color:#04251a; border:0; border-radius:8px; font-weight:700; font-size:13px; padding:7px 16px; cursor:pointer; }
+        .sd-accept:hover { background:#5df0b8; }
+        .sd-reject { background: transparent; color: var(--cg-red); border:1px solid rgba(248,113,113,.5); border-radius:8px; font-weight:700; font-size:13px; padding:7px 16px; cursor:pointer; }
+        .sd-reject:hover { background: rgba(248,113,113,.12); }
 
-        .glass-stats-btn {
-          border: 1px solid rgba(255,255,255,0.35) !important;
-          background: linear-gradient(180deg, rgba(245,158,11,0.85), rgba(217,119,6,0.8)) !important;
-          color: #2b1503 !important;
-          font-weight: 600 !important;
-          border-radius: 999px !important;
-          padding: 10px 22px !important;
-          box-shadow: 0 6px 18px rgba(201,121,61,0.3), inset 0 1px 0 rgba(255,255,255,0.4);
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .glass-stats-btn:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 10px 24px rgba(201,121,61,0.4), inset 0 1px 0 rgba(255,255,255,0.5);
-        }
-
-        .glass-hr {
-          border-color: rgba(255,255,255,0.12) !important;
-          margin: 24px 0;
-        }
-
-        .glass-request-card {
-          background: rgba(16,25,46,0.72) !important;
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-          border: 1px solid rgba(251,191,143,0.3) !important;
-          border-radius: 16px !important;
-          color: #f3f6fb !important;
-          box-shadow: 0 10px 30px rgba(0,0,0,0.45), 0 0 24px 2px rgba(201,121,61,0.2);
-        }
-        .glass-request-card strong { color: #fbbf8f; }
-        .glass-accept-btn {
-          border: none !important;
-          background: linear-gradient(180deg, rgba(74,222,128,0.9), rgba(34,197,94,0.8)) !important;
-          color: #06210f !important;
-          font-weight: 600 !important;
-          border-radius: 999px !important;
-        }
-        .glass-reject-btn {
-          border: none !important;
-          background: linear-gradient(180deg, rgba(248,113,113,0.9), rgba(220,38,38,0.8)) !important;
-          color: #2b0505 !important;
-          font-weight: 600 !important;
-          border-radius: 999px !important;
-        }
-
-        .glass-modal .modal-content {
-          background: rgba(16,25,46,0.85) !important;
-          backdrop-filter: blur(24px);
-          -webkit-backdrop-filter: blur(24px);
-          border: 1px solid rgba(255,255,255,0.16) !important;
-          border-radius: 20px !important;
-          color: #f3f6fb !important;
-        }
-        .glass-modal .modal-header {
-          border-bottom: 1px solid rgba(255,255,255,0.1) !important;
-        }
-        .glass-modal .modal-title { color: #fbbf8f; font-weight: 600; }
-        .glass-modal .btn-close {
-          filter: invert(1) grayscale(100%) brightness(200%);
+        @media (max-width: 980px) {
+          .sd-grid { grid-template-columns: 1fr; }
+          .sd-toasts { right: 12px; left: 12px; width: auto; }
         }
       `}</style>
 
-      <div style={styles.bgLayer}>
-        <div style={{ ...styles.blob, ...styles.blobA }} />
-        <div style={{ ...styles.blob, ...styles.blobB }} />
-        <div style={{ ...styles.blob, ...styles.blobC }} />
-      </div>
+      <div className="sd-shell">
+        <div className="sd-head">
+          <div>
+            <div className="sd-crumb">Pages / Dashboard</div>
+            <h1 className="sd-title">Supplier Dashboard</h1>
+          </div>
+          <button className="cg-btn" onClick={() => navigate("/supplier/statistics")}>
+            View statistics
+          </button>
+        </div>
 
-      <Container style={{ position: "relative", zIndex: 1, paddingTop: 48, paddingBottom: 60 }}>
-        <Row>
-          <Col>
-            <h2 className="glass-heading">⚡ Supplier Dashboard</h2>
-            <p className="glass-subtext">
-              Monitor customer requests and manage your charging station.
+        <div className="sd-grid">
+          <section className="sd-hero">
+            <div className="sd-live">Listening for requests</div>
+            <h2>Monitor customer requests and manage your charging station.</h2>
+            <p>
+              New charging requests appear here in real time. Accept to start a session
+              or reject to free the customer to pick another station.
             </p>
-          </Col>
-          <Col className="text-end">
-            <Button className="glass-stats-btn" onClick={() => navigate("/supplier/statistics")}>
-              📊 View Statistics
-            </Button>
-          </Col>
-        </Row>
+            <div className="sd-actions">
+              <button className="cg-btn" onClick={() => navigate("/supplier/statistics")}>
+                Open statistics
+              </button>
+              <button className="cg-btn-ghost" onClick={() => navigate("/profile/supplier")}>
+                Edit station profile
+              </button>
+            </div>
+          </section>
 
-        <hr className="glass-hr" />
+          <aside className="sd-side">
+            <div className="sd-box">
+              Pending requests<b className="g">{requests.length}</b>
+            </div>
+          </aside>
+        </div>
 
         {/* Notifications */}
-        <div
-          style={{
-            position: "fixed",
-            top: "90px",
-            right: "30px",
-            zIndex: 2000,
-            width: "340px",
-          }}
-        >
+        <div className="sd-toasts">
           <AnimatePresence>
             {requests.map((req) => (
               <motion.div
@@ -194,14 +151,13 @@ function DashboardSupplier() {
                 exit={{ opacity: 0, x: 100 }}
                 style={{ marginBottom: 12 }}
               >
-                <Alert variant="info" className="glass-request-card">
-                  <strong>🔋 New Request</strong>
+                <Alert variant="info" className="sd-request">
+                  <strong>⚡ New Request</strong>
                   <p style={{ margin: "6px 0" }}>From: <b>{req.customerName}</b></p>
                   <p style={{ margin: "0 0 10px" }}>Units Needed: {req.unitsNeeded}</p>
-
                   <div className="d-flex justify-content-end gap-2">
-                    <Button size="sm" className="glass-accept-btn" onClick={() => handleAccept(req._id)}>Accept</Button>
-                    <Button size="sm" className="glass-reject-btn" onClick={() => handleReject(req._id)}>Reject</Button>
+                    <button className="sd-accept" onClick={() => handleAccept(req._id)}>Accept</button>
+                    <button className="sd-reject" onClick={() => handleReject(req._id)}>Reject</button>
                   </div>
                 </Alert>
               </motion.div>
@@ -210,9 +166,9 @@ function DashboardSupplier() {
         </div>
 
         {/* Stats Modal */}
-        <Modal show={showStats} onHide={() => setShowStats(false)} className="glass-modal">
+        <Modal show={showStats} onHide={() => setShowStats(false)}>
           <Modal.Header closeButton>
-            <Modal.Title>📈 Charging Station Statistics</Modal.Title>
+            <Modal.Title>Charging Station Statistics</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             {stats ? (
@@ -226,27 +182,9 @@ function DashboardSupplier() {
             )}
           </Modal.Body>
         </Modal>
-      </Container>
+      </div>
     </div>
   );
 }
-
-const styles = {
-  pageWrap: { position: "relative", minHeight: "100vh" },
-  bgLayer: {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    width: "100vw",
-    height: "100vh",
-    overflow: "hidden",
-    zIndex: -1,
-    background: "linear-gradient(160deg, #0b1220 0%, #10192e 45%, #0a1420 100%)",
-  },
-  blob: { position: "absolute", borderRadius: "50%", filter: "blur(70px)", opacity: 0.5, pointerEvents: "none" },
-  blobA: { width: 380, height: 380, top: "-8%", left: "-6%", background: "radial-gradient(circle, #f59e0b, transparent 70%)", animation: "float1 15s ease-in-out infinite" },
-  blobB: { width: 340, height: 340, bottom: "-8%", right: "-8%", background: "radial-gradient(circle, #38bdf8, transparent 70%)", animation: "float2 17s ease-in-out infinite" },
-  blobC: { width: 260, height: 260, top: "40%", right: "20%", background: "radial-gradient(circle, #a78bfa, transparent 70%)", animation: "float3 13s ease-in-out infinite" },
-};
 
 export default DashboardSupplier;

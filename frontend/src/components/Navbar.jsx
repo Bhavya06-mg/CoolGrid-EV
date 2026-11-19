@@ -55,53 +55,50 @@ function NavigationBar() {
     <>
       <style>{`
         .glass-navbar {
-          background: rgba(16, 25, 46, 0.55) !important;
-          backdrop-filter: blur(18px);
-          -webkit-backdrop-filter: blur(18px);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-          box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255,255,255,0.06);
+          background: var(--cg-side) !important;
+          border-bottom: 1px solid var(--cg-line);
           position: sticky;
           top: 0;
           z-index: 50;
         }
         .glass-nav-link {
           position: relative;
-          color: rgba(230, 235, 244, 0.75) !important;
+          color: var(--cg-muted) !important;
+          font-size: 0.92rem;
           padding: 8px 14px !important;
-          border-radius: 999px;
+          border-radius: 10px;
           transition: color 0.15s ease, background 0.15s ease;
+          cursor: pointer;
         }
         .glass-nav-link:hover {
-          color: #f3f6fb !important;
-          background: rgba(255, 255, 255, 0.08);
+          color: var(--cg-text) !important;
+          background: var(--cg-card);
         }
         .glass-brand {
-          color: #f3f6fb !important;
-          font-weight: 600;
-          font-size: 1.4rem;
-          letter-spacing: -0.3px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          color: var(--cg-text) !important;
+          font-weight: 700;
+          font-size: 1.35rem;
+          letter-spacing: -0.2px;
         }
-        .glass-brand::before {
-          content: '';
-          display: inline-block;
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          background: #4fd6a0;
-          box-shadow: 0 0 8px 2px rgba(79, 214, 160, 0.6);
-          margin-right: 10px;
-          vertical-align: middle;
-        }
+        .glass-brand svg { width: 22px; height: 26px; }
+        .glass-brand b { color: var(--cg-green); font-weight: 700; }
         .glass-toggle {
-          border-color: rgba(255,255,255,0.25) !important;
-          background: rgba(255,255,255,0.06) !important;
+          border-color: var(--cg-line) !important;
+          background: var(--cg-card) !important;
         }
+        .glass-toggle .navbar-toggler-icon { filter: invert(1); }
       `}</style>
 
       <Navbar expand="lg" className="glass-navbar py-3">
         <Container fluid className="px-4">
           <Navbar.Brand as={Link} to={homeHref} className="glass-brand">
-            Coolgrid EV
+            <svg viewBox="0 0 30 34" aria-hidden="true">
+              <path d="M17 1 3 19h9l-3 14L27 14h-9z" fill="#34e0a1" />
+            </svg>
+            <span>Cool<b>grid</b></span>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="nav" className="glass-toggle" />
           <Navbar.Collapse id="nav">

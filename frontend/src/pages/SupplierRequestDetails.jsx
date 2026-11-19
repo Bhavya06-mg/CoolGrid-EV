@@ -21,12 +21,12 @@ const glassStyles = {
     height: "100vh",
     overflow: "hidden",
     zIndex: -1,
-    background: "linear-gradient(160deg, #0b1220 0%, #10192e 45%, #0a1420 100%)",
+    background: "#0b0b0c",
   },
-  blob: { position: "absolute", borderRadius: "50%", filter: "blur(70px)", opacity: 0.5, pointerEvents: "none" },
-  blobA: { width: 380, height: 380, top: "-8%", left: "-6%", background: "radial-gradient(circle, #f59e0b, transparent 70%)", animation: "float1 15s ease-in-out infinite" },
-  blobB: { width: 340, height: 340, bottom: "-8%", right: "-8%", background: "radial-gradient(circle, #38bdf8, transparent 70%)", animation: "float2 17s ease-in-out infinite" },
-  blobC: { width: 260, height: 260, top: "40%", right: "20%", background: "radial-gradient(circle, #a78bfa, transparent 70%)", animation: "float3 13s ease-in-out infinite" },
+  blob: { position: "absolute", borderRadius: "50%", display: "none", opacity: 0.5, pointerEvents: "none" },
+  blobA: { width: 380, height: 380, top: "-8%", left: "-6%", background: "radial-gradient(circle, #34e0a1, transparent 70%)", animation: "float1 15s ease-in-out infinite" },
+  blobB: { width: 340, height: 340, bottom: "-8%", right: "-8%", background: "radial-gradient(circle, #34e0a1, transparent 70%)", animation: "float2 17s ease-in-out infinite" },
+  blobC: { width: 260, height: 260, top: "40%", right: "20%", background: "radial-gradient(circle, #34e0a1, transparent 70%)", animation: "float3 13s ease-in-out infinite" },
 };
 
 const GlassBackground = () => (
@@ -37,84 +37,77 @@ const GlassBackground = () => (
       @keyframes float2 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(-40px,30px) scale(1.1);} }
       @keyframes float3 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(20px,40px) scale(0.95);} }
 
-      .rd-heading { color: #f3f6fb; font-weight: 600; }
-      .rd-text { color: rgba(230,235,244,0.8); }
-      .rd-text b { color: #f3f6fb; }
+      .rd-heading { color: #f2f4f3; font-weight: 600; }
+      .rd-text { color: #9aa3a0; }
+      .rd-text b { color: #f2f4f3; }
 
       .rd-glass-card {
-        background: rgba(255,255,255,0.06) !important;
-        backdrop-filter: blur(24px);
-        -webkit-backdrop-filter: blur(24px);
-        border: 1px solid rgba(255,255,255,0.15) !important;
+        background: #161718 !important;
+        border: 1px solid #232526 !important;
         border-radius: 22px !important;
-        box-shadow: 0 10px 34px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08);
-        color: #f3f6fb;
+        box-shadow: 0 10px 34px rgba(0,0,0,0.4), inset 0 1px 0 #161718;
+        color: #f2f4f3;
         padding: 32px !important;
       }
 
-      .rd-hr { border-color: rgba(255,255,255,0.12) !important; margin: 24px 0; }
+      .rd-hr { border-color: #232526 !important; margin: 24px 0; }
 
       .rd-subsection {
-        background: rgba(255,255,255,0.035);
-        border: 1px solid rgba(255,255,255,0.09);
+        background: #161718;
+        border: 1px solid #232526;
         border-radius: 16px;
         padding: 20px;
       }
 
       .rd-glass-input {
-        background: rgba(255,255,255,0.05) !important;
-        border: 1px solid rgba(255,255,255,0.18) !important;
-        color: #f3f6fb !important;
+        background: #161718 !important;
+        border: 1px solid #232526 !important;
+        color: #f2f4f3 !important;
         border-radius: 10px !important;
         padding: 10px 14px !important;
-        backdrop-filter: blur(4px);
       }
-      .rd-glass-input::placeholder { color: rgba(230,235,244,0.4); }
+      .rd-glass-input::placeholder { color: #7d8582; }
       .rd-glass-input:focus {
-        background: rgba(255,255,255,0.08) !important;
-        border-color: rgba(251,191,143,0.6) !important;
-        box-shadow: 0 0 0 3px rgba(201,121,61,0.18) !important;
+        background: #161718 !important;
+        border-color: rgba(52,224,161,0.6) !important;
+        box-shadow: 0 0 0 3px rgba(52,224,161,0.18) !important;
         color: #fff !important;
       }
-      .rd-glass-label { color: rgba(251,191,143,0.85); font-size: 12px; font-weight: 600; letter-spacing: 0.4px; }
+      .rd-glass-label { color: rgba(52,224,161,0.85); font-size: 12px; font-weight: 600; letter-spacing: 0.4px; }
 
       .rd-alert-info {
-        background: rgba(56,189,248,0.14) !important;
-        border: 1px solid rgba(125,211,252,0.35) !important;
-        color: #bfe8fd !important;
+        background: rgba(52,224,161,0.14) !important;
+        border: 1px solid rgba(52,224,161,0.35) !important;
+        color: #34e0a1 !important;
         border-radius: 14px !important;
-        backdrop-filter: blur(10px);
       }
       .rd-alert-success {
-        background: rgba(34,197,94,0.15) !important;
-        border: 1px solid rgba(74,222,128,0.4) !important;
-        color: #a7f3c8 !important;
+        background: rgba(31,168,116,0.15) !important;
+        border: 1px solid rgba(52,224,161,0.4) !important;
+        color: #34e0a1 !important;
         border-radius: 14px !important;
-        backdrop-filter: blur(10px);
       }
       .rd-alert-warning {
         background: rgba(245,158,11,0.15) !important;
-        border: 1px solid rgba(251,191,143,0.4) !important;
-        color: #fde3b8 !important;
+        border: 1px solid rgba(52,224,161,0.4) !important;
+        color: #34e0a1 !important;
         border-radius: 14px !important;
-        backdrop-filter: blur(10px);
       }
       .rd-alert-danger {
         background: rgba(220,38,38,0.15) !important;
         border: 1px solid rgba(248,113,113,0.4) !important;
         color: #fca5a5 !important;
         border-radius: 14px !important;
-        backdrop-filter: blur(10px);
       }
 
       .rd-btn-primary {
         border: none !important;
-        background: linear-gradient(180deg, rgba(56,189,248,0.9), rgba(59,130,246,0.8)) !important;
+        background: #34e0a1 !important;
         color: #fff !important;
         font-weight: 600 !important;
         border-radius: 999px !important;
         padding: 10px 20px !important;
-        box-shadow: 0 6px 18px rgba(56,189,248,0.3), inset 0 1px 0 rgba(255,255,255,0.4);
+        box-shadow: 0 6px 18px rgba(52,224,161,0.3), inset 0 1px 0 transparent;
         transition: transform 0.2s ease, opacity 0.2s ease;
       }
       .rd-btn-primary:hover:not(:disabled) { transform: translateY(-2px); }
@@ -122,12 +115,12 @@ const GlassBackground = () => (
 
       .rd-btn-success {
         border: none !important;
-        background: linear-gradient(180deg, rgba(74,222,128,0.9), rgba(34,197,94,0.8)) !important;
-        color: #06210f !important;
+        background: #34e0a1 !important;
+        color: #04251a !important;
         font-weight: 600 !important;
         border-radius: 999px !important;
         padding: 10px 20px !important;
-        box-shadow: 0 6px 18px rgba(52,211,153,0.3), inset 0 1px 0 rgba(255,255,255,0.4);
+        box-shadow: 0 6px 18px rgba(52,224,161,0.3), inset 0 1px 0 transparent;
         transition: transform 0.2s ease, opacity 0.2s ease;
       }
       .rd-btn-success:hover:not(:disabled) { transform: translateY(-2px); }
@@ -388,7 +381,7 @@ const navigate = useNavigate();
       <div style={glassStyles.pageWrap}>
         <GlassBackground />
         <Container className="text-center" style={{ position: "relative", zIndex: 1, paddingTop: 120 }}>
-          <Spinner animation="border" style={{ color: "#fbbf8f" }} />
+          <Spinner animation="border" style={{ color: "#34e0a1" }} />
           <p className="rd-text mt-3">Loading request details...</p>
         </Container>
       </div>

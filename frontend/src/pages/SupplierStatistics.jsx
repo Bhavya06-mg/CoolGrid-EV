@@ -18,12 +18,12 @@ const glassStyles = {
     height: "100vh",
     overflow: "hidden",
     zIndex: -1,
-    background: "linear-gradient(160deg, #0b1220 0%, #10192e 45%, #0a1420 100%)",
+    background: "#0b0b0c",
   },
-  blob: { position: "absolute", borderRadius: "50%", filter: "blur(70px)", opacity: 0.5, pointerEvents: "none" },
-  blobA: { width: 380, height: 380, top: "-8%", left: "-6%", background: "radial-gradient(circle, #f59e0b, transparent 70%)", animation: "float1 15s ease-in-out infinite" },
-  blobB: { width: 340, height: 340, bottom: "-8%", right: "-8%", background: "radial-gradient(circle, #38bdf8, transparent 70%)", animation: "float2 17s ease-in-out infinite" },
-  blobC: { width: 260, height: 260, top: "40%", right: "20%", background: "radial-gradient(circle, #a78bfa, transparent 70%)", animation: "float3 13s ease-in-out infinite" },
+  blob: { position: "absolute", borderRadius: "50%", display: "none", opacity: 0.5, pointerEvents: "none" },
+  blobA: { width: 380, height: 380, top: "-8%", left: "-6%", background: "radial-gradient(circle, #34e0a1, transparent 70%)", animation: "float1 15s ease-in-out infinite" },
+  blobB: { width: 340, height: 340, bottom: "-8%", right: "-8%", background: "radial-gradient(circle, #34e0a1, transparent 70%)", animation: "float2 17s ease-in-out infinite" },
+  blobC: { width: 260, height: 260, top: "40%", right: "20%", background: "radial-gradient(circle, #34e0a1, transparent 70%)", animation: "float3 13s ease-in-out infinite" },
 };
 
 const GlassBackground = () => (
@@ -34,25 +34,23 @@ const GlassBackground = () => (
       @keyframes float2 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(-40px,30px) scale(1.1);} }
       @keyframes float3 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(20px,40px) scale(0.95);} }
 
-      .glass-heading { color: #f3f6fb; font-weight: 600; }
-      .glass-subtext { color: rgba(230,235,244,0.65); }
+      .glass-heading { color: #f2f4f3; font-weight: 600; }
+      .glass-subtext { color: #9aa3a0; }
 
       .glass-stat-card {
-        background: rgba(255,255,255,0.06) !important;
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255,255,255,0.14) !important;
+        background: #161718 !important;
+        border: 1px solid #232526 !important;
         border-radius: 18px !important;
-        box-shadow: 0 8px 26px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08);
-        color: #f3f6fb;
+        box-shadow: 0 8px 26px rgba(0,0,0,0.35), inset 0 1px 0 #161718;
+        color: #f2f4f3;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
       }
       .glass-stat-card:hover {
         transform: translateY(-3px);
-        box-shadow: 0 14px 32px rgba(0,0,0,0.45), 0 0 24px 2px rgba(201,121,61,0.2);
+        box-shadow: 0 14px 32px rgba(0,0,0,0.45), 0 0 24px 2px rgba(52,224,161,0.2);
       }
       .glass-stat-card h6 {
-        color: rgba(251,191,143,0.85);
+        color: rgba(52,224,161,0.85);
         font-size: 12px;
         letter-spacing: 1px;
         text-transform: uppercase;
@@ -60,30 +58,28 @@ const GlassBackground = () => (
         margin-bottom: 8px;
       }
       .glass-stat-card h3 {
-        color: #f3f6fb;
+        color: #f2f4f3;
         font-weight: 700;
         margin: 0;
       }
 
       .glass-chart-card {
-        background: rgba(255,255,255,0.05) !important;
-        backdrop-filter: blur(22px);
-        -webkit-backdrop-filter: blur(22px);
-        border: 1px solid rgba(255,255,255,0.14) !important;
+        background: #161718 !important;
+        border: 1px solid #232526 !important;
         border-radius: 20px !important;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.4), inset 0 1px 0 #161718;
         padding: 28px !important;
       }
       .glass-chart-card h6 {
-        color: #f3f6fb;
+        color: #f2f4f3;
         font-weight: 600;
         margin-bottom: 16px;
       }
 
       .glass-back-btn {
-        border: 1px solid rgba(255,255,255,0.3) !important;
-        background: rgba(255,255,255,0.07) !important;
-        color: #f3f6fb !important;
+        border: 1px solid transparent !important;
+        background: #161718 !important;
+        color: #f2f4f3 !important;
         font-weight: 600 !important;
         border-radius: 999px !important;
         padding: 9px 20px !important;
@@ -91,7 +87,7 @@ const GlassBackground = () => (
       }
       .glass-back-btn:hover {
         transform: translateY(-2px);
-        background: rgba(255,255,255,0.13) !important;
+        background: #232526 !important;
       }
 
       .glass-alert-error {
@@ -99,7 +95,6 @@ const GlassBackground = () => (
         border: 1px solid rgba(248,113,113,0.4) !important;
         color: #fecaca !important;
         border-radius: 14px !important;
-        backdrop-filter: blur(10px);
       }
     `}</style>
     <div style={glassStyles.bgLayer}>
@@ -163,7 +158,7 @@ function SupplierStatistics() {
       <div style={glassStyles.pageWrap}>
         <GlassBackground />
         <Container className="text-center" style={{ position: "relative", zIndex: 1, paddingTop: 120 }}>
-          <Spinner animation="border" style={{ color: "#fbbf8f" }} />
+          <Spinner animation="border" style={{ color: "#34e0a1" }} />
           <div className="mt-3 glass-subtext">Loading statistics...</div>
         </Container>
       </div>
@@ -212,9 +207,9 @@ function SupplierStatistics() {
         label: "Revenue (₹)",
         data: monthlyRevenue,
         fill: true,
-        borderColor: "#fbbf8f",
-        backgroundColor: "rgba(251,191,143,0.15)",
-        pointBackgroundColor: "#f59e0b",
+        borderColor: "#34e0a1",
+        backgroundColor: "rgba(52,224,161,0.15)",
+        pointBackgroundColor: "#34e0a1",
         pointBorderColor: "#fff",
         tension: 0.35,
       },
@@ -224,17 +219,17 @@ function SupplierStatistics() {
   const chartOptions = {
     plugins: {
       legend: {
-        labels: { color: "rgba(230,235,244,0.85)" },
+        labels: { color: "#9aa3a0" },
       },
     },
     scales: {
       x: {
-        ticks: { color: "rgba(230,235,244,0.6)" },
-        grid: { color: "rgba(255,255,255,0.06)" },
+        ticks: { color: "#9aa3a0" },
+        grid: { color: "#161718" },
       },
       y: {
-        ticks: { color: "rgba(230,235,244,0.6)" },
-        grid: { color: "rgba(255,255,255,0.06)" },
+        ticks: { color: "#9aa3a0" },
+        grid: { color: "#161718" },
       },
     },
   };
