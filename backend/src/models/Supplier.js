@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { AREAS } from "../constants/AREAS.js";
 
 const supplierSchema = new mongoose.Schema(
   {
@@ -14,12 +13,19 @@ const supplierSchema = new mongoose.Schema(
     pricePerUnit: { type: Number, required: true },
     availableUnits: { type: Number, required: true },
 
-  
-     area: {
-        type: String,
-        required: true,
-        enum: Object.keys(AREAS)
-      },
+    // Short locality shown on cards / filters (kept for existing code that reads `area`)
+    area: { type: String, required: true, trim: true },
+
+    // Exact address entered at registration
+    address: {
+      line1: { type: String, trim: true },      // building / street
+      landmark: { type: String, trim: true },
+      area: { type: String, trim: true },       // locality
+      city: { type: String, trim: true },
+      state: { type: String, trim: true },
+      pincode: { type: String, trim: true },
+      formatted: { type: String, trim: true }   // single-line version for display
+    },
         // 🔥 REQUIRED NOW — makes sorting work
     coordinates: {
       lat: { type: Number, required: false },

@@ -49,12 +49,61 @@ export const registerCustomer = async (req, res) => {
 // -------------------------------------------
 export const registerSupplier = async (req, res) => {
   try {
-    const { username, password, name, phone, area, renewable, pricePerUnit, availableUnits } = req.body;
+    const {
+      username, password, name, phone, area, address, coordinates,
+      renewable, pricePerUnit, availableUnits,
+    } = req.body;
 
-    // Validate area
-    const areaCoordinates = AREAS[area];
-    if (!areaCoordinates) {
-      return res.status(400).json({ message: "Invalid area selected" });
+    let finalArea;
+    let finalAddress;
+    let finalCoords;
+
+    if (address) {
+      // ---- New flow: exact address + coordinates ----
+      const line1 = String(address.line1 || "").trim();
+      const landmark = String(address.landmark || "").trim();
+      const locality = String(address.area || "").trim();
+      const city = String(address.city || "").trim();
+      const state = String(address.state || "").trim();
+      const pincode = String(address.pincode || "").trim();
+
+      if (!line1 || !locality || !city || !state) {
+        return res.status(400).json({ message: "Please enter building/street, area, city and state" });
+      }
+      if (!/^\d{6}$/.test(pincode)) {
+        return res.status(400).json({ message: "Pincode must be 6 digits" });
+      }
+
+      const lat = Number(coordinates?.lat);
+      const lng = Number(coordinates?.lng);
+      if (
+        !Number.isFinite(lat) || !Number.isFinite(lng) ||
+        lat < -90 || lat > 90 || lng < -180 || lng > 180
+      ) {
+        return res.status(400).json({ message: "A valid map location is required for the address" });
+      }
+
+      finalArea = locality;
+      finalCoords = { lat, lng };
+      finalAddress = {
+        line1,
+        landmark,
+        area: locality,
+        city,
+        state,
+        pincode,
+        formatted: [line1, landmark, locality, city, `${state} ${pincode}`]
+          .filter(Boolean)
+          .join(", "),
+      };
+    } else {
+      // ---- Legacy flow: pick one of the predefined areas ----
+      const areaCoordinates = AREAS[area];
+      if (!areaCoordinates) {
+        return res.status(400).json({ message: "Please provide the station address" });
+      }
+      finalArea = area;
+      finalCoords = areaCoordinates;
     }
 
     // Check existing user
@@ -70,12 +119,13 @@ export const registerSupplier = async (req, res) => {
       password: hashedPassword,
       name,
       phone,
-      area,
+      area: finalArea,
+      address: finalAddress,
       renewable,
       pricePerUnit,
       availableUnits,
       status: "AVAILABLE",
-      coordinates: areaCoordinates   // ✔ IMPORTANT
+      coordinates: finalCoords   // ✔ IMPORTANT
     });
 
     await supplier.save();
