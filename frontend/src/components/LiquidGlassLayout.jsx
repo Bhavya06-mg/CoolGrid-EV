@@ -73,8 +73,8 @@ function LiquidGlassLayout({
           box-shadow: 0 0 0 3px var(--cg-green-soft) !important;
         }
         .glass-input option{ background: var(--cg-card) !important; color: var(--cg-text) !important; }
-        .glass-check{ background: var(--cg-bg) !important; border:1px solid var(--cg-line) !important; }
-        .glass-check:checked{ background-color: var(--cg-green) !important; border-color: var(--cg-green) !important; }
+        .glass-check .form-check-input{ background-color: var(--cg-bg); border:1px solid var(--cg-line); }
+        .glass-check .form-check-input:checked{ background-color: var(--cg-green); border-color: var(--cg-green); }
 
         .glass-btn{
           width:100%; border:0 !important; border-radius:10px !important;

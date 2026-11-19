@@ -324,6 +324,7 @@ export default function DashboardCustomer() {
                       <span className="ev-go">↗</span>
                     </div>
                     <h3 className="ev-card-name">{s.name}</h3>
+                    {s.address?.formatted && <div className="ev-addr" title={s.address.formatted}>{s.address.formatted}</div>}
                     <div className="ev-meta">
                       <span>
                         Location<b>{s.area || "—"}</b>
@@ -480,6 +481,7 @@ const css = `
   .ev-right{ display:flex; flex-direction:column; gap:12px; }
   .ev-sel-head{ display:flex; justify-content:space-between; font-size:12px; color:#7d8582; }
   .ev-sel-name{ font-size:20px; font-weight:600; margin-top:12px; }
+  .ev-addr{ font-size:11px; line-height:1.45; color:#7d8582; margin:-6px 0 12px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
   .ev-sel-area{ font-size:12px; margin-bottom:14px; }
   .ev-sel-stats{ display:flex; justify-content:space-between; font-size:10px; color:#7d8582; }
   .ev-sel-stats b{ display:block; color:#f2f4f3; font-size:14px; font-weight:500; margin-top:4px; }
