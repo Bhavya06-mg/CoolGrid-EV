@@ -5,7 +5,7 @@ import React, { useEffect, useState, useCallback, useMemo } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import CarIllustration from "../components/CarIllustration";
-import { useVehicle, batteryStatus } from "../utils/vehicle";
+import { useVehicle, batteryStatus, openVehicleModal, vehicleTitle, hasBattery } from "../utils/vehicle";
 
 const API = "https://coolgrid-ev-1.onrender.com/api";
 
@@ -18,20 +18,8 @@ export default function DashboardCustomer() {
   const [selectedId, setSelectedId] = useState(null);
 
   const navigate = useNavigate();
-  const { vehicle, update: updateVehicle } = useVehicle();
-  const [editingVehicle, setEditingVehicle] = useState(false);
-  const [draft, setDraft] = useState({ model: "", battery: "", range: "" });
+  const { vehicle } = useVehicle();
   const bStatus = batteryStatus(vehicle.battery);
-
-  const startEdit = () => {
-    setDraft({ model: vehicle.model || "", battery: vehicle.battery ?? "", range: vehicle.range ?? "" });
-    setEditingVehicle(true);
-  };
-  const saveEdit = () => {
-    const clamp = (v, max) => (v === "" ? "" : Math.max(0, Math.min(max, Number(v))));
-    updateVehicle({ model: draft.model.trim(), battery: clamp(draft.battery, 100), range: clamp(draft.range, 2000) });
-    setEditingVehicle(false);
-  };
 
   const haversineKm = useCallback((lat1, lon1, lat2, lon2) => {
     lat1 = Number(lat1);
@@ -356,41 +344,17 @@ export default function DashboardCustomer() {
             <div className="ev-panel ev-veh">
               <div className="ev-sel-head">
                 <span style={{ color: "#f2f4f3", fontSize: 12 }}>Vehicle Stats</span>
-                {editingVehicle ? (
-                  <span>
-                    <button className="ev-link" onClick={() => setEditingVehicle(false)}>Cancel</button>
-                    <button className="ev-link g" onClick={saveEdit}>Save</button>
-                  </span>
-                ) : (
-                  <button className="ev-link g" onClick={startEdit}>Edit</button>
-                )}
+                <button className="ev-link g" onClick={openVehicleModal}>Edit</button>
               </div>
 
               <CarIllustration className="ev-veh-img" />
 
-              {editingVehicle ? (
-                <div className="ev-veh-form">
-                  <label>Model
-                    <input placeholder="e.g. Tata Nexon EV" value={draft.model} onChange={(e) => setDraft({ ...draft, model: e.target.value })} />
-                  </label>
-                  <div className="ev-veh-two">
-                    <label>Battery %
-                      <input type="number" min="0" max="100" placeholder="80" value={draft.battery} onChange={(e) => setDraft({ ...draft, battery: e.target.value })} />
-                    </label>
-                    <label>Range (km)
-                      <input type="number" min="0" placeholder="340" value={draft.range} onChange={(e) => setDraft({ ...draft, range: e.target.value })} />
-                    </label>
-                  </div>
-                  <div className="ev-muted" style={{ fontSize: 10 }}>Saved on this device.</div>
-                </div>
-              ) : (
-                <div className="ev-stats">
-                  <span>EV<b>{vehicle.model || "Add model"}</b></span>
-                  <span>Battery<b className={bStatus ? `t-${bStatus.tone}` : ""}>{vehicle.battery !== undefined && vehicle.battery !== "" ? `${vehicle.battery}%` : "—"}</b></span>
-                  <span>Range<b>{vehicle.range ? `${vehicle.range} km` : "—"}</b></span>
-                  <span>Vehicle ID<b>{vehicle.vehicleId || "—"}</b></span>
-                </div>
-              )}
+              <div className="ev-stats" onClick={openVehicleModal} style={{ cursor: "pointer" }} title="View car details">
+                <span>EV<b>{vehicleTitle(vehicle) || "Add your EV"}</b></span>
+                <span>Battery<b className={bStatus ? `t-${bStatus.tone}` : ""}>{hasBattery(vehicle) ? `${vehicle.battery}%` : "—"}</b></span>
+                <span>Range<b>{vehicle.range ? `${vehicle.range} km` : "—"}</b></span>
+                <span>Vehicle ID<b>{vehicle.vehicleId || "—"}</b></span>
+              </div>
             </div>
 
             <div className="ev-two">

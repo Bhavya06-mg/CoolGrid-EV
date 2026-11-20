@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { NavLink, useNavigate } from "react-router-dom";
 import CarIllustration from "./CarIllustration";
-import { useVehicle, batteryStatus } from "../utils/vehicle";
+import VehicleModal from "./VehicleModal";
+import { useVehicle, batteryStatus, hasBattery, vehicleTitle, OPEN_EVENT } from "../utils/vehicle";
 
 const ICONS = {
   stations: <path d="M12 21s-7-6.2-7-11a7 7 0 1 1 14 0c0 4.8-7 11-7 11Zm0-8.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />,
@@ -40,7 +42,32 @@ function readUser() {
 export default function Sidebar() {
   const navigate = useNavigate();
   const role = localStorage.getItem("role") === "SUPPLIER" ? "SUPPLIER" : "CUSTOMER";
-  const user = readUser();
+  const [user, setUser] = useState(readUser());
+  const [showCar, setShowCar] = useState(false);
+
+  // the dashboard's "Edit" link asks the sidebar to open the dialog
+  useEffect(() => {
+    const open = () => setShowCar(true);
+    window.addEventListener(OPEN_EVENT, open);
+    return () => window.removeEventListener(OPEN_EVENT, open);
+  }, []);
+
+  // login doesn't always store the name — fetch it once so the sidebar isn't "Your account"
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (user.name || !token) return;
+    axios
+      .get("https://coolgrid-ev-1.onrender.com/api/profile/profile", { headers: { Authorization: `Bearer ${token}` } })
+      .then((res) => {
+        const n = res.data?.profile?.name;
+        if (!n) return;
+        const next = { ...readUser(), name: n };
+        localStorage.setItem("user", JSON.stringify(next));
+        setUser(next);
+      })
+      .catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const name = user.name || "Your account";
   const initials = name
     .split(" ")
@@ -80,21 +107,23 @@ export default function Sidebar() {
       {role === "CUSTOMER" && (
         <div className="cg-side-cars">
           <div className="cg-side-title">My Car</div>
-          <div className="cg-mycar">
+          <button type="button" className="cg-mycar" onClick={() => setShowCar(true)} aria-label="Open my car details">
             <CarIllustration className="cg-mycar-img" />
-            <div className="cg-mycar-name">{vehicle.model || "Add your EV"}</div>
+            <div className="cg-mycar-name">{vehicleTitle(vehicle) || "Add your EV"}</div>
             <div className="cg-mycar-id">{vehicle.vehicleId ? `ID · ${vehicle.vehicleId}` : "No vehicle ID"}</div>
             <div className="cg-mycar-row">
               <span>
                 Battery
-                <b className={status ? `t-${status.tone}` : ""}>{vehicle.battery !== undefined && vehicle.battery !== "" ? `${vehicle.battery}%` : "—"}</b>
+                <b className={status ? `t-${status.tone}` : ""}>{hasBattery(vehicle) ? `${vehicle.battery}%` : "—"}</b>
               </span>
               <span>
                 Range
                 <b>{vehicle.range ? `${vehicle.range} km` : "—"}</b>
               </span>
             </div>
-          </div>
+            <div className="cg-mycar-cta">{vehicleTitle(vehicle) || hasBattery(vehicle) ? "View / edit details" : "Add car details"} ›</div>
+          </button>
+          <VehicleModal show={showCar} onClose={() => setShowCar(false)} />
         </div>
       )}
 
@@ -124,7 +153,10 @@ const css = `
   .cg-side-link.active{ color:var(--cg-green); background:var(--cg-green-soft); }
   .cg-side-link.active::after{ content:""; position:absolute; right:-16px; top:8px; bottom:8px; width:2px; background:var(--cg-green); border-radius:2px; }
   .cg-side-title{ font-size:12px; color:var(--cg-muted); margin-bottom:8px; padding:0 6px; }
-  .cg-mycar{ background:var(--cg-card); border-radius:14px; padding:12px; }
+  .cg-mycar{ display:block; width:100%; text-align:left; font:inherit; color:inherit; cursor:pointer; background:var(--cg-card); border:1px solid transparent; border-radius:14px; padding:12px; transition:border-color .15s, transform .15s; }
+  .cg-mycar:hover{ border-color:var(--cg-green); transform:translateY(-1px); }
+  .cg-mycar:focus-visible{ outline:2px solid var(--cg-green); outline-offset:2px; }
+  .cg-mycar-cta{ margin-top:12px; padding-top:10px; border-top:1px solid var(--cg-line); font-size:11px; font-weight:600; color:var(--cg-green); }
   .cg-mycar-img{ width:100%; height:auto; display:block; margin-bottom:6px; }
   .cg-mycar-name{ font-size:13px; font-weight:600; color:var(--cg-text); }
   .cg-mycar-id{ font-size:10px; color:var(--cg-muted); margin:2px 0 10px; word-break:break-all; }
